@@ -194,11 +194,11 @@ const toggleFormMenu = (event) => {
                         <div class="required-field hidden"></div>
                     </div>
                 </VhField>
-
+                <!-- {{ store.item.batches }} -->
                 <VhField label="Batches">
                     <div class="p-inputgroup">
                         <MultiSelect 
-                        v-model="store.item.batch_ids" 
+                        v-model="store.item.batches" 
                         display="chip" 
                         :options="store.assets.batches" 
                         optionLabel="name" 

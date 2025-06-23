@@ -58,6 +58,7 @@ class TeachersController extends Controller
     public function getList(Request $request)
     {
         try{
+            // dd($request);
             return Teacher::getList($request);
         }catch (\Exception $e){
             $response = [];

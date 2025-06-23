@@ -215,6 +215,7 @@ export const useTeacherStore = defineStore({
                 this.afterGetList,
                 options
             );
+            
         },
         //---------------------------------------------------------------------
         afterGetList: function (data, res)
@@ -239,7 +240,12 @@ export const useTeacherStore = defineStore({
         {
             if(data)
             {
+                data['contact'] = Number(data['contact'])
+
+                data['batches'] = data['batches'].map((batch) => {return batch['id']})
+
                 this.item = data;
+                // console.log(data)
             }else{
                 this.$router.push({name: 'teachers.index',query:this.query});
             }

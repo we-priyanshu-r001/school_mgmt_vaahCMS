@@ -57,7 +57,7 @@ class Student extends VaahModel
     //-------------------------------------------------
     // Relation Methods
     public function batch(){
-        return $this->belongsTo(Batch::class);
+        return $this->belongsTo(Batch::class, 'sc_batch_id');
     }
 
     //-------------------------------------------------
@@ -295,6 +295,14 @@ class Student extends VaahModel
         }
 
         $list = $list->paginate($rows);
+
+        // agregate Data code block
+        foreach ($list->items() as $student) {
+
+            // Append custom attribute (not persisted)
+            $student->batch_name = $student->batch->name ?? null;
+            // dd($student->batch_name);
+        }
 
         $response['success'] = true;
         $response['data'] = $list;

@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Faker\Factory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use WebReinvent\VaahCms\Models\VaahModel;
 use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
@@ -48,6 +49,7 @@ class Batch extends VaahModel
 
     //-------------------------------------------------
     protected $appends = [
+        'student_count'
     ];
 
     //-------------------------------------------------
@@ -60,13 +62,29 @@ class Batch extends VaahModel
     //-------------------------------------------------
     // Relation Methods
     public function students(){
-        return $this->hasMany(Student::class);
+        return $this->hasMany(Student::class, 'sc_batch_id');
     }
 
     public function teachers()
     {
         return $this->belongsToMany(Teacher::class, 'sc_batch_sc_teacher', 'sc_batch_id', 'sc_teacher_id');
     }
+
+    //-------------------------------------------------
+    // Accessor Methods
+
+    public function StudentCount(): Attribute
+    {
+        if ($this->relationLoaded('students')) {
+            return Attribute::make(
+                get: fn() => $this->batches->count(),
+            );
+        }
+        return Attribute::make(
+            get: fn() => $this->students()->count()
+        );
+    }
+
 
     //-------------------------------------------------
     public static function getUnFillableColumns()
@@ -303,6 +321,13 @@ class Batch extends VaahModel
         }
 
         $list = $list->paginate($rows);
+
+        // edit here to show student count in the table
+        // foreach ($list->items() as $batch) {
+
+        //     // Append custom attribute (not persisted)
+        //     $batch->student_count = $batch->students()->count() ?? null;
+        // }
 
         $response['success'] = true;
         $response['data'] = $list;

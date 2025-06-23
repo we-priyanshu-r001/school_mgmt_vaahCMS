@@ -9,6 +9,8 @@ use WebReinvent\VaahCms\Models\VaahModel;
 use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
 use WebReinvent\VaahCms\Libraries\VaahSeeder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 
 class Teacher extends VaahModel
 {
@@ -45,6 +47,7 @@ class Teacher extends VaahModel
 
     //-------------------------------------------------
     protected $appends = [
+        'batch_count'
     ];
 
     //-------------------------------------------------
@@ -58,6 +61,22 @@ class Teacher extends VaahModel
     // Relation Methods
     public function batches(){
         return $this->belongsToMany(Batch::class, 'sc_batch_sc_teacher', 'sc_teacher_id', 'sc_batch_id');
+    }
+
+    //-------------------------------------------------
+    // Custom Accessors
+    public function BatchCount(): Attribute
+    {
+        // If the 'batches' relation is already loaded, this prevents an extra query
+        if ($this->relationLoaded('batches')) {
+            return Attribute::make(
+                get: fn() => $this->batches->count(),
+            );
+        }
+
+        // Otherwise, count via query
+        return Attribute::make(
+            get: fn() => $this->batches()->count());
     }
 
 
@@ -188,9 +207,9 @@ class Teacher extends VaahModel
         }
 
         // Many to Many IMPL Blocks
-        $batch_ids = $inputs['batch_ids'];
+        $batch_ids = $inputs['batches'];
         // dd($batch_ids);
-        unset($inputs['batch_ids']);
+        unset($inputs['batches']);
 
         $item = new self();
         $item->fill($inputs);
@@ -292,19 +311,29 @@ class Teacher extends VaahModel
     //-------------------------------------------------
     public static function getList($request)
     {
+        // dd($request);
         $list = self::getSorted($request->filter);
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
 
+        
         $rows = config('vaahcms.per_page');
-
+        
         if($request->has('rows'))
         {
             $rows = $request->rows;
         }
-
+        
         $list = $list->paginate($rows);
+
+        // agregate Data code block
+        // foreach ($list->items() as $teacher) {
+
+        //     // Append custom attribute (not persisted)
+        //     $teacher->batch_count = $teacher->batches()->count() ?? null;
+        // }
+
 
         $response['success'] = true;
         $response['data'] = $list;
@@ -474,8 +503,10 @@ class Teacher extends VaahModel
 
         $item = self::where('id', $id)
             ->with(['createdByUser', 'updatedByUser', 'deletedByUser'])
+            ->with('batches')
             ->withTrashed()
             ->first();
+    
 
         if(!$item)
         {

@@ -42,6 +42,20 @@ const useVaah = vaah();
             </Column>
 
 
+            <Column field="batch" header="Batch"
+                    class="overflow-wrap-anywhere"
+                    :sortable="true">
+
+                <template #body="prop">
+                    <Badge v-if="prop.data.deleted_at"
+                           value="Trashed"
+                           severity="danger"></Badge>
+                    {{prop.data.batch_name}}
+                </template>
+
+            </Column>
+
+
                 <Column field="updated_at" header="Updated"
                         v-if="store.isViewLarge()"
                         style="width:150px;"

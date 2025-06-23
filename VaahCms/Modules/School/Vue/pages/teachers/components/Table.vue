@@ -54,6 +54,58 @@ const useVaah = vaah();
 
             </Column>
 
+            <Column field="subject" header="Subject"
+                    class="overflow-wrap-anywhere"
+                    :sortable="true">
+
+                <template #body="prop">
+                    <Badge v-if="prop.data.deleted_at"
+                           value="Trashed"
+                           severity="danger"></Badge>
+                    {{prop.data.subject}}
+                </template>
+
+            </Column>
+            
+            <Column field="contact" header="Contact"
+                class="overflow-wrap-anywhere"
+                :sortable="true">
+
+            <template #body="prop">
+                <Badge v-if="prop.data.deleted_at"
+                        value="Trashed"
+                        severity="danger"></Badge>
+                {{prop.data.contact}}
+            </template>
+
+            </Column>
+
+            <Column field="gender" header="Gender"
+                class="overflow-wrap-anywhere"
+                :sortable="true">
+
+            <template #body="prop">
+                <Badge v-if="prop.data.deleted_at"
+                        value="Trashed"
+                        severity="danger"></Badge>
+                {{prop.data.gender}}
+            </template>
+
+            </Column>
+
+            <Column field="batches" header="Batches"
+                class="overflow-wrap-anywhere"
+                :sortable="true">
+
+            <template #body="prop">
+                <Badge v-if="prop.data.deleted_at"
+                        value="Trashed"
+                        severity="danger"></Badge>
+                {{prop.data.batch_count}}
+            </template>
+
+            </Column>
+
 
                 <Column field="updated_at" header="Updated"
                         v-if="store.isViewLarge()"
