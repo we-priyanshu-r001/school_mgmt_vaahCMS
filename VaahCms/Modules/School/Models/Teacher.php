@@ -208,7 +208,6 @@ class Teacher extends VaahModel
 
         // Many to Many IMPL Blocks
         $batch_ids = $inputs['batches'];
-        // dd($batch_ids);
         unset($inputs['batches']);
 
         $item = new self();
@@ -291,6 +290,34 @@ class Teacher extends VaahModel
 
     }
     //-------------------------------------------------
+    public function scopeSubjectFilter($query, $filter)
+    {
+        // dd($query);
+
+        if(!isset($filter['subject']))
+        {
+            return $query;
+        }
+        $subject = $filter['subject'];
+
+        return $query->where('subject', $subject);
+
+    }
+    //-------------------------------------------------
+    public function scopeGenderFilter($query, $filter)
+    {
+        // dd($query);
+
+        if(!isset($filter['gender']))
+        {
+            return $query;
+        }
+        $gender = $filter['gender'];
+
+        return $query->where('gender', $gender);
+
+    }
+    //-------------------------------------------------
     public function scopeSearchFilter($query, $filter)
     {
 
@@ -299,11 +326,14 @@ class Teacher extends VaahModel
             return $query;
         }
         $search_array = explode(' ',$filter['q']);
+        // dd($search_array);
         foreach ($search_array as $search_item){
             $query->where(function ($q1) use ($search_item) {
                 $q1->where('name', 'LIKE', '%' . $search_item . '%')
                     ->orWhere('slug', 'LIKE', '%' . $search_item . '%')
-                    ->orWhere('id', 'LIKE', $search_item . '%');
+                    ->orWhere('id', 'LIKE', $search_item . '%')
+                    ->orWhere('contact', 'LIKE', $search_item . '%')
+                    ->orWhere('email', 'LIKE', $search_item . '%');
             });
         }
 
@@ -316,6 +346,9 @@ class Teacher extends VaahModel
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
+        $list->subjectFilter($request->filter);
+        $list->genderFilter($request->filter);
+
 
         
         $rows = config('vaahcms.per_page');
@@ -556,7 +589,16 @@ class Teacher extends VaahModel
 
         $item = self::where('id', $id)->withTrashed()->first();
         $item->fill($inputs);
+
+        // Many to Many IMPL Blocks
+        $batch_ids = $inputs['batches'];
+        unset($inputs['batches']);
+
         $item->save();
+        $item->batches()->sync($batch_ids);
+        // Many to Many IMPL Block
+
+
 
         $response = self::getItem($item->id);
         $response['messages'][] = trans("vaahcms-general.saved_successfully");

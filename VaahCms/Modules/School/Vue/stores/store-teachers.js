@@ -221,7 +221,8 @@ export const useTeacherStore = defineStore({
         afterGetList: function (data, res)
         {
             if(data)
-            {
+            {   
+                console.log(data)
                 this.list = data;
             }
         },

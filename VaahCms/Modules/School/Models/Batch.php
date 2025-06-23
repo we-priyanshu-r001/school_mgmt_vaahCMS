@@ -43,13 +43,14 @@ class Batch extends VaahModel
     ];
     //-------------------------------------------------
     protected $casts = [
-        'start_time' => 'datetime:H:i:s',
-        'end_time' => 'datetime:H:i:s',
+        'start_time' => 'datetime:H:i',
+        'end_time' => 'datetime:H:i',
     ];
 
     //-------------------------------------------------
     protected $appends = [
-        'student_count'
+        'student_count',
+        'teacher_count'
     ];
 
     //-------------------------------------------------
@@ -77,11 +78,23 @@ class Batch extends VaahModel
     {
         if ($this->relationLoaded('students')) {
             return Attribute::make(
-                get: fn() => $this->batches->count(),
+                get: fn() => $this->students->count(),
             );
         }
         return Attribute::make(
             get: fn() => $this->students()->count()
+        );
+    }
+
+    public function TeacherCount(): Attribute
+    {
+        if ($this->relationLoaded('teachers')) {
+            return Attribute::make(
+                get: fn() => $this->teachers->count(),
+            );
+        }
+        return Attribute::make(
+            get: fn() => $this->teachers()->count()
         );
     }
 
@@ -516,6 +529,7 @@ class Batch extends VaahModel
     public static function updateItem($request, $id)
     {
         $inputs = $request->all();
+        dd($inputs);
 
         $validation = self::validation($inputs);
         if (!$validation['success']) {

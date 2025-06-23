@@ -138,6 +138,45 @@ const store = useTeacherStore();
             </VhFieldVertical>
 
 
+            <VhFieldVertical >
+                <template #label>
+                    <b>Subjects:</b>
+                </template>
+
+                <div class="flex gap-1">
+                    <Dropdown v-model="store.query.filter.subject" 
+                            :options="store.assets.subjects"
+                            data-testid="teachers-filters-subject-only"
+                            optionLabel="name"
+                            optionValue="name"
+                            placeholder="Select a Subject" 
+                            class="w-full md:w-14rem" />
+                    <!-- <label for="trashed-exclude" class="cursor-pointer">Subjects</label> -->
+                    <Button label="Reset" @click.prevent="store.query.filter.subject = null"/>
+                </div>
+
+            </VhFieldVertical>
+
+            <VhFieldVertical >
+                <template #label>
+                    <b>Genders:</b>
+                </template>
+
+                <div class="flex gap-1">
+                    <Dropdown v-model="store.query.filter.gender" 
+                            :options="store.assets.genders"
+                            data-testid="teachers-filters-gender-only"
+                            optionLabel="name"
+                            optionValue="name"
+                            placeholder="Select a gender" 
+                            class="w-full md:w-14rem" />
+                    <!-- <label for="trashed-exclude" class="cursor-pointer">Subjects</label> -->
+                    <Button label="Reset" @click.prevent="store.query.filter.gender = null"/>
+                </div>
+
+            </VhFieldVertical>
+
+
         </Panel>
 
     </div>

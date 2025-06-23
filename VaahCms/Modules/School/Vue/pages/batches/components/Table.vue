@@ -55,6 +55,19 @@ const useVaah = vaah();
 
             </Column>
 
+            <Column field="teacher_count" header="Teachers"
+                    class="overflow-wrap-anywhere"
+                    :sortable="true">
+
+                <template #body="prop">
+                    <Badge v-if="prop.data.deleted_at"
+                           value="Trashed"
+                           severity="danger"></Badge>
+                    {{prop.data.teacher_count}}
+                </template>
+
+            </Column>
+
 
                 <Column field="updated_at" header="Updated"
                         v-if="store.isViewLarge()"

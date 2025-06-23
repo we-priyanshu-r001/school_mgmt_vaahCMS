@@ -93,7 +93,7 @@ const useVaah = vaah();
 
             </Column>
 
-            <Column field="batches" header="Batches"
+            <Column field="batch_count" header="Batches"
                 class="overflow-wrap-anywhere"
                 :sortable="true">
 

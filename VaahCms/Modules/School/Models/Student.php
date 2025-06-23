@@ -262,6 +262,20 @@ class Student extends VaahModel
 
     }
     //-------------------------------------------------
+    public function scopeBatchFilter($query, $filter)
+    {
+        // dd($query);
+
+        if(!isset($filter['batch']))
+        {
+            return $query;
+        }
+        $batch = $filter['batch'];
+
+        return $query->where('sc_batch_id', $batch);
+
+    }
+    //-------------------------------------------------
     public function scopeSearchFilter($query, $filter)
     {
 
@@ -286,6 +300,7 @@ class Student extends VaahModel
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
+        $list->batchFilter($request->filter);
 
         $rows = config('vaahcms.per_page');
 

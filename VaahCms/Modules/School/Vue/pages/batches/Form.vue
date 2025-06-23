@@ -153,6 +153,7 @@ const toggleFormMenu = (event) => {
                             v-model="store.item.start_time"
                             data-testid="batches-start_time"
                             name="batches-start_time"
+                            hourFormat="24"
                             timeOnly />
                         <div class="required-field hidden"></div>
                     </div>

@@ -9,6 +9,8 @@ import {useRoute} from 'vue-router';
 const store = useStudentStore();
 const route = useRoute();
 
+const minDate = new Date(1950, 0, 1)
+
 onMounted(async () => {
     /**
      * Fetch the record from the database
@@ -177,7 +179,8 @@ const toggleFormMenu = (event) => {
                             v-model="store.item.dob" 
                             placeholder="Enter DOB"
                             name="students-dob"
-                            data-testid="students-dob" required/>
+                            data-testid="students-dob" 
+                            :minDate="minDate" required/>
                         <div class="required-field hidden"></div>
                     </div>
                 </VhField>
