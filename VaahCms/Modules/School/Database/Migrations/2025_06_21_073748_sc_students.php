@@ -22,7 +22,7 @@ class ScStudents extends Migration
 
                 $table->string('name')->nullable()->index();
                 $table->string('email')->nullable();
-                $table->string('gender')->nullable();
+                $table->unsignedBigInteger('vh_taxonomy_gender_id')->nullable();
                 $table->date('dob')->nullable();
                 $table->string('slug')->nullable()->index();
                 $table->boolean('is_active')->nullable()->index();

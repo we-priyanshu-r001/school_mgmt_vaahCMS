@@ -154,7 +154,7 @@ const toggleFormMenu = (event) => {
                             data-testid="batches-start_time"
                             name="batches-start_time"
                             hourFormat="24"
-                            timeOnly />
+                            timeOnly required/>
                         <div class="required-field hidden"></div>
                     </div>
                 </VhField>
@@ -165,12 +165,12 @@ const toggleFormMenu = (event) => {
                             v-model="store.item.end_time"
                             data-testid="batches-end_time"
                             name="batches-end_time"
-                            timeOnly />
+                            timeOnly required/>
                         <div class="required-field hidden"></div>
                     </div>
                 </VhField>
 
-                <VhField label="Slug">
+                <!-- <VhField label="Slug">
                     <div class="p-inputgroup">
                         <InputText class="w-full"
                                    placeholder="Enter the slug"
@@ -179,7 +179,7 @@ const toggleFormMenu = (event) => {
                                    v-model="store.item.slug" required/>
                         <div class="required-field hidden"></div>
                     </div>
-                </VhField>
+                </VhField> -->
 
                 <VhField label="Is Active">
                     <InputSwitch v-bind:false-value="0"

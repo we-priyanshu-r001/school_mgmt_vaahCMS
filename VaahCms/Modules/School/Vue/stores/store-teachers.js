@@ -5,6 +5,13 @@ import {vaah} from '../vaahvue/pinia/vaah'
 
 let model_namespace = 'VaahCms\\Modules\\School\\Models\\Teacher';
 
+function extractBatchIDs(data){
+    if(!data['batches']){
+        return null
+    }
+    data['batches'] = data['batches'].map((batch) => {return batch['id']})
+    return data
+}
 
 let base_url = document.getElementsByTagName('base')[0].getAttribute("href");
 let ajax_url = base_url + "/school/teachers";
@@ -243,8 +250,9 @@ export const useTeacherStore = defineStore({
             {
                 data['contact'] = Number(data['contact'])
 
-                data['batches'] = data['batches'].map((batch) => {return batch['id']})
+                data = extractBatchIDs(data)
 
+                console.log(data)
                 this.item = data;
                 // console.log(data)
             }else{
@@ -456,6 +464,7 @@ export const useTeacherStore = defineStore({
                 case 'restore':
                 case 'save':
                     if(this.item && this.item.id){
+                        data = extractBatchIDs(data)
                         this.item = data;
                     }
                     break;

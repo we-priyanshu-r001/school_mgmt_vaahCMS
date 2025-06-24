@@ -1,9 +1,11 @@
 <?php namespace VaahCms\Modules\School\Http\Controllers\Backend;
 
+use App\Mail\BatchAssignmentMail;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use VaahCms\Modules\School\Models\Batch;
 use VaahCms\Modules\School\Models\Teacher;
+use WebReinvent\VaahCms\Libraries\VaahMail;
 use WebReinvent\VaahCms\Models\Taxonomy;
 
 class TeachersController extends Controller
@@ -148,6 +150,7 @@ class TeachersController extends Controller
     public function createItem(Request $request)
     {
         try{
+            // VaahMail::send(new BatchAssignmentMail(), 'priyanshu-r001@webreinvent.com');
             return Teacher::createItem($request);
         }catch (\Exception $e){
             $response = [];

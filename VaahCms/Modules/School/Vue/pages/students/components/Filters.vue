@@ -139,10 +139,17 @@ const store = useStudentStore();
 
             <VhFieldVertical >
                 <template #label>
-                    <b>Batch:</b>
+                    <div class="flex items-center justify-between gap-8 w-full">
+                        <span class="font-semibold text-sm text-gray-700">Batch:</span>
+                        <Button 
+                            label="Reset" 
+                            class="text-sm px-2 py-1"
+                            @click.prevent="store.query.filter.batch = null" 
+                        />
+                    </div>
                 </template>
 
-                <div class="flex gap-1">
+                <div >
                     <Dropdown v-model="store.query.filter.batch" 
                             :options="store.assets.batches"
                             data-testid="teachers-filters-batch-only"
@@ -151,7 +158,6 @@ const store = useStudentStore();
                             placeholder="Select a Batch" 
                             class="w-full md:w-14rem" />
                     <!-- <label for="trashed-exclude" class="cursor-pointer">Subjects</label> -->
-                    <Button label="Reset" @click.prevent="store.query.filter.batch = null"/>
                 </div>
 
             </VhFieldVertical>

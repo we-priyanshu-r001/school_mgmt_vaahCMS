@@ -28,8 +28,8 @@ class Student extends VaahModel
     protected $fillable = [
         'uuid',
         'email',
-        'gender',
         'dob',
+        'vh_taxonomy_gender_id',
         'sc_batch_id',
         'name',
         'slug',
@@ -597,7 +597,11 @@ class Student extends VaahModel
 
         $rules = array(
             'name' => 'required|max:150',
-            'slug' => 'required|max:150',
+            // 'slug' => 'required|max:150',
+            'email' => 'required|max:150',
+            'gender' => 'required|max:150',
+            'dob' => 'required',
+            'batch' => 'required|max:150',
         );
 
         $validator = \Validator::make($inputs, $rules);

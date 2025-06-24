@@ -1,5 +1,6 @@
 <?php namespace VaahCms\Modules\School\Models;
 
+use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
@@ -97,7 +98,20 @@ class Batch extends VaahModel
             get: fn() => $this->teachers()->count()
         );
     }
+    
+    public function StartTime(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => Carbon::parse($value)->setTimezone('Asia/Kolkata')->format('H:i')
+        );
+    }
 
+    public function EndTime(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => Carbon::parse($value)->setTimezone(env('LOCAL_TIMEZONE'))->format('H:i')
+        );
+    }
 
     //-------------------------------------------------
     public static function getUnFillableColumns()
@@ -621,7 +635,9 @@ class Batch extends VaahModel
 
         $rules = array(
             'name' => 'required|max:150',
-            'slug' => 'required|max:150',
+            // 'slug' => 'required|max:150',
+            'start_time' => 'required',
+            'end_time' => 'required',
         );
 
         $validator = \Validator::make($inputs, $rules);

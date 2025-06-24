@@ -163,7 +163,7 @@ const toggleFormMenu = (event) => {
                 
                 <VhField label="Gender">
                     <div class="p-inputgroup">
-                        <Dropdown v-model="store.item.gender" 
+                        <Dropdown v-model="store.item.vh_taxonomy_gender_id" 
                             :options="store.assets.genders" 
                             optionLabel="name"
                             optionValue="name"
@@ -198,7 +198,7 @@ const toggleFormMenu = (event) => {
                 </VhField>
 
 
-                <VhField label="Slug">
+                <!-- <VhField label="Slug">
                     <div class="p-inputgroup">
                         <InputText class="w-full"
                                    placeholder="Enter the slug"
@@ -207,7 +207,7 @@ const toggleFormMenu = (event) => {
                                    v-model="store.item.slug" required/>
                         <div class="required-field hidden"></div>
                     </div>
-                </VhField>
+                </VhField> -->
 
                 <VhField label="Is Active">
                     <InputSwitch v-bind:false-value="0"

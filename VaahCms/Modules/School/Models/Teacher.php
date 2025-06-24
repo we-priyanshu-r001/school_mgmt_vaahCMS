@@ -1,5 +1,6 @@
 <?php namespace VaahCms\Modules\School\Models;
 
+use App\Mail\BatchAssignmentMail;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
@@ -10,6 +11,10 @@ use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
 use WebReinvent\VaahCms\Libraries\VaahSeeder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+// use VaahCms\Modules\School\Models\Teacher;
+use WebReinvent\VaahCms\Libraries\VaahMail;
+use WebReinvent\VaahCms\Models\Taxonomy;
+
 
 
 class Teacher extends VaahModel
@@ -31,8 +36,8 @@ class Teacher extends VaahModel
         'uuid',
         'email',
         'contact',
-        'gender',
-        'subject',
+        'vh_taxonomy_gender_id',
+        'vh_taxonomy_subject_id',
         'name',
         'slug',
         'is_active',
@@ -208,7 +213,7 @@ class Teacher extends VaahModel
 
         // Many to Many IMPL Blocks
         $batch_ids = $inputs['batches'];
-        unset($inputs['batches']);
+        // unset($inputs['batches']);
 
         $item = new self();
         $item->fill($inputs);
@@ -217,6 +222,13 @@ class Teacher extends VaahModel
         $item->save();
         $item->batches()->attach($batch_ids);
         // Many to Many IMPL Block
+
+        // Send Mail to teacher
+        $item->load('batches');
+
+        if ($item->email) {
+            VaahMail::send(new BatchAssignmentMail($item), $item->email);
+        }
 
         $response = self::getItem($item->id);
         $response['messages'][] = trans("vaahcms-general.saved_successfully");
@@ -304,6 +316,22 @@ class Teacher extends VaahModel
 
     }
     //-------------------------------------------------
+    public function scopeBatchFilter($query, $filter)
+    {
+        // dd($query);
+
+        if(!isset($filter['batches']))
+        {
+            return $query;
+        }
+        $batch = $filter['batches'];
+
+        return $query->whereHas('batches', function ($q1) use ($batch) {
+            $q1->where('name', $batch);
+        });
+
+    }
+    //-------------------------------------------------
     public function scopeGenderFilter($query, $filter)
     {
         // dd($query);
@@ -333,7 +361,11 @@ class Teacher extends VaahModel
                     ->orWhere('slug', 'LIKE', '%' . $search_item . '%')
                     ->orWhere('id', 'LIKE', $search_item . '%')
                     ->orWhere('contact', 'LIKE', $search_item . '%')
-                    ->orWhere('email', 'LIKE', $search_item . '%');
+                    ->orWhere('email', 'LIKE', $search_item . '%')
+
+                    ->orWhereHas('batches', function ($q2) use ($search_item) {
+                        $q2->where('name', 'LIKE', '%' . $search_item . '%');
+                    });
             });
         }
 
@@ -348,6 +380,7 @@ class Teacher extends VaahModel
         $list->searchFilter($request->filter);
         $list->subjectFilter($request->filter);
         $list->genderFilter($request->filter);
+        $list->batchFilter($request->filter);
 
 
         
@@ -594,8 +627,8 @@ class Teacher extends VaahModel
         $batch_ids = $inputs['batches'];
         unset($inputs['batches']);
 
-        $item->save();
         $item->batches()->sync($batch_ids);
+        $item->save();
         // Many to Many IMPL Block
 
 
@@ -614,6 +647,7 @@ class Teacher extends VaahModel
             $response['errors'][] = trans("vaahcms-general.record_does_not_exist");
             return $response;
         }
+        $item->batches()->detach();
         $item->forceDelete();
 
         $response['success'] = true;
@@ -657,7 +691,10 @@ class Teacher extends VaahModel
 
         $rules = array(
             'name' => 'required|max:150',
-            'slug' => 'required|max:150',
+            // 'slug' => 'required|max:150',
+            'email' => 'required|max:150',
+            'contact' => 'required|max:10|min:10',
+
         );
 
         $validator = \Validator::make($inputs, $rules);

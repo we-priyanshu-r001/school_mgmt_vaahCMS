@@ -20,13 +20,15 @@ class ScTeacher extends Migration
                 $table->uuid('uuid')->nullable()->index();
 
                 $table->string('name')->nullable()->index();
-                $table->string('subject')->nullable();
+                $table->unsignedBigInteger('vh_taxonomy_subject_id')->nullable();
                 $table->string('email')->nullable();
                 $table->string('contact')->nullable();
-                $table->string('gender')->nullable();
+                $table->unsignedBigInteger('vh_taxonomy_gender_id')->nullable();
                 $table->string('slug')->nullable()->index();
                 $table->boolean('is_active')->nullable()->index();
 
+                // $table->foreign('vh_taxonomy_subject_id')->references('id')->on('vh_taxonomies');
+                // $table->foreign('vh_taxonomy_gender_id')->references('id')->on('vh_taxonomies');
 
                 //----common fields
                 $table->text('meta')->nullable();
