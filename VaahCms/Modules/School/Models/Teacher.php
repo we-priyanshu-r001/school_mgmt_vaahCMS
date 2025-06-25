@@ -349,7 +349,7 @@ class Teacher extends VaahModel
         }
         $subject = $filter['subject'];
 
-        return $query->where('subject', $subject);
+        return $query->where('vh_taxonomy_subject_id', $subject);
 
     }
     //-------------------------------------------------
@@ -379,7 +379,7 @@ class Teacher extends VaahModel
         }
         $gender = $filter['gender'];
 
-        return $query->where('gender', $gender);
+        return $query->where('vh_taxonomy_gender_id', $gender);
 
     }
     //-------------------------------------------------
@@ -410,8 +410,8 @@ class Teacher extends VaahModel
     //-------------------------------------------------
     public static function getList($request)
     {
-        // dd($request);
-        $list = self::getSorted($request->filter)->with('subject')->with('gender');
+        
+        $list = self::getSorted($request->filter)->with('subject')->with('gender'); 
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
@@ -689,9 +689,11 @@ class Teacher extends VaahModel
         // Compare old vs new batches
         if ($originalBatchIds != $batch_ids) {
             // Send email notification
+            // $teacher->load('batches');
+            $item->load('batches');
 
-            if ($teacher->email) {
-                VaahMail::send(new BatchAssignmentMail($teacher), $teacher->email);
+            if ($item->email) {
+                VaahMail::send(new BatchAssignmentMail($item), $item->email);
             }
         }
 

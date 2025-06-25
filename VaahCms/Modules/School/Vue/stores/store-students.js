@@ -210,6 +210,11 @@ export const useStudentStore = defineStore({
             let options = {
                 query: vaah().clone(this.query)
             };
+
+            // added this to reload assets every time form loads
+            this.assets_is_fetching = true;
+            this.getAssets();
+
             await vaah().ajax(
                 this.ajax_url,
                 this.afterGetList,
@@ -630,6 +635,8 @@ export const useStudentStore = defineStore({
         {
             this.item = vaah().clone(this.assets.empty_item);
             this.getFormMenu();
+            
+            
             this.$router.push({name: 'students.form',query:this.query})
         },
         //---------------------------------------------------------------------
@@ -930,6 +937,16 @@ export const useStudentStore = defineStore({
             this.form_menu_list = form_menu;
 
         },
+        // async  handleCreateActions  () {
+        //         // Switch to form view
+        //         store.toForm();
+
+        //         // Reload assets
+        //         await store.getAssets();
+
+        //         // Optionally: check what got loaded
+        //         console.log('Assets reloaded:', store.assets);
+        //     }
         //---------------------------------------------------------------------
     }
 });

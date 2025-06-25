@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Faker\Factory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\DB;
 use WebReinvent\VaahCms\Models\VaahModel;
 use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
@@ -99,14 +100,14 @@ class Batch extends VaahModel
         );
     }
     
-    public function StartTime(): Attribute
+    public function startTime(): Attribute
     {
         return Attribute::make(
             get: fn($value) => Carbon::parse($value)->setTimezone('Asia/Kolkata')->format('H:i')
         );
     }
 
-    public function EndTime(): Attribute
+    public function endTime(): Attribute
     {
         return Attribute::make(
             get: fn($value) => Carbon::parse($value)->setTimezone(env('LOCAL_TIMEZONE'))->format('H:i')
@@ -349,13 +350,6 @@ class Batch extends VaahModel
 
         $list = $list->paginate($rows);
 
-        // edit here to show student count in the table
-        // foreach ($list->items() as $batch) {
-
-        //     // Append custom attribute (not persisted)
-        //     $batch->student_count = $batch->students()->count() ?? null;
-        // }
-
         $response['success'] = true;
         $response['data'] = $list;
 
@@ -449,6 +443,11 @@ class Batch extends VaahModel
         }
 
         $items_id = collect($inputs['items'])->pluck('id')->toArray();
+
+        
+        // Method 1 to delete all pivot table entries there might be better ways but I'm unaware about them at the moment
+        DB::table('sc_batch_sc_teacher')->whereIn('sc_teacher_id', $items_id)->delete();
+
         self::whereIn('id', $items_id)->forceDelete();
 
         $response['success'] = true;
@@ -488,6 +487,8 @@ class Batch extends VaahModel
                     ->each->restore();
                 break;
             case 'delete-all':
+                DB::table('sc_batch_sc_teacher')->truncate();
+
                 $list->forceDelete();
                 break;
             case 'create-100-records':
@@ -592,6 +593,9 @@ class Batch extends VaahModel
             $response['errors'][] = trans("vaahcms-general.record_does_not_exist");
             return $response;
         }
+
+        $item->teachers()->detach();
+
         $item->forceDelete();
 
         $response['success'] = true;

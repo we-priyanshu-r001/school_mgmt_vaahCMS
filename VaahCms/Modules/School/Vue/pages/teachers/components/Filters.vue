@@ -148,7 +148,7 @@ const store = useTeacherStore();
                             :options="store.assets.subjects"
                             data-testid="teachers-filters-subject-only"
                             optionLabel="name"
-                            optionValue="name"
+                            optionValue="id"
                             placeholder="Select a Subject" 
                             class="w-full md:w-14rem" />
                     <!-- <label for="trashed-exclude" class="cursor-pointer">Subjects</label> -->
@@ -167,7 +167,7 @@ const store = useTeacherStore();
                             :options="store.assets.genders"
                             data-testid="teachers-filters-gender-only"
                             optionLabel="name"
-                            optionValue="name"
+                            optionValue="id"
                             placeholder="Select a gender" 
                             class="w-full md:w-14rem" />
                     <!-- <label for="trashed-exclude" class="cursor-pointer">Subjects</label> -->

@@ -29,6 +29,11 @@ const items = ref([
                 route: "/"
             },
             {
+                label: 'Batches',
+                icon: 'fa-regular fa-chart-bar',
+                route: "/batches"
+            },
+            {
                 label: 'Teachers',
                 icon: 'fa-regular fa-chart-bar',
                 route: "/teachers"
@@ -38,11 +43,7 @@ const items = ref([
                 icon: 'fa-regular fa-chart-bar',
                 route: "/students"
             },
-            {
-                label: 'Batches',
-                icon: 'fa-regular fa-chart-bar',
-                route: "/batches"
-            },
+            
         ]
     },
 ]);

@@ -36,16 +36,6 @@ class BatchAssignmentMail extends Mailable {
     }
 
     /**
-     * Get the message content definition.
-     */
-    // public function content(): Content
-    // {
-    //     return new Content(
-    //         view: 'mails.batch_assignment',
-    //     );
-    // }
-
-    /**
      * Get the channels the event should be broadcast on.
      *
      * @return array
