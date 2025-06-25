@@ -1,6 +1,7 @@
 <?php namespace VaahCms\Modules\School\Models;
 
-use App\Mail\BatchAssignmentMail;
+// use App\Mail\BatchAssignmentMail;
+use VaahCms\Modules\School\Mails\BatchAssignmentMail;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
 use WebReinvent\VaahCms\Libraries\VaahSeeder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\DB;
 // use VaahCms\Modules\School\Models\Teacher;
 use WebReinvent\VaahCms\Libraries\VaahMail;
 use WebReinvent\VaahCms\Models\Taxonomy;
@@ -70,7 +72,7 @@ class Teacher extends VaahModel
 
     //-------------------------------------------------
     // Custom Accessors
-    public function BatchCount(): Attribute
+    public function batchCount(): Attribute
     {
         // If the 'batches' relation is already loaded, this prevents an extra query
         if ($this->relationLoaded('batches')) {
@@ -82,6 +84,25 @@ class Teacher extends VaahModel
         // Otherwise, count via query
         return Attribute::make(
             get: fn() => $this->batches()->count());
+    }
+
+    // Custom Utility Methods
+    public static function getGender(){
+        $genders = Taxonomy::getTaxonomyByType('genders');
+        // dd($genders->pluck('id')->toArray());
+        return $genders->pluck('id')->toArray();
+    }
+
+    public static function getSubject(){
+        $subject = Taxonomy::getTaxonomyByType('subjects');
+        // dd($subject->pluck('id')->toArray());
+        return $subject->pluck('id')->toArray();
+    }
+
+    public static function getAllBacthes(){
+        $batches = Batch::all();
+        // dd($batches->pluck('id')->toArray());
+        return $batches->pluck('id')->toArray();
     }
 
 
@@ -131,7 +152,22 @@ class Teacher extends VaahModel
         )->select('id', 'uuid', 'first_name', 'last_name', 'email');
     }
 
+    public function subject()
+    {
+        return $this->belongsTo(Taxonomy::class,
+            'vh_taxonomy_subject_id', 'id'
+        )->select('id', 'name');
+    }
     //-------------------------------------------------
+    
+    public function gender()
+    {
+        return $this->belongsTo(Taxonomy::class,
+            'vh_taxonomy_gender_id', 'id'
+        );
+    }
+    //-------------------------------------------------
+    
     public function updatedByUser()
     {
         return $this->belongsTo(User::class,
@@ -223,12 +259,13 @@ class Teacher extends VaahModel
         $item->batches()->attach($batch_ids);
         // Many to Many IMPL Block
 
-        // Send Mail to teacher
-        $item->load('batches');
+        // Temporariliy Disabled
+        // Send Mail to teacher 
+        // $item->load('batches');
 
-        if ($item->email) {
-            VaahMail::send(new BatchAssignmentMail($item), $item->email);
-        }
+        // if ($item->email) {
+        //     VaahMail::send(new BatchAssignmentMail($item), $item->email);
+        // }
 
         $response = self::getItem($item->id);
         $response['messages'][] = trans("vaahcms-general.saved_successfully");
@@ -374,7 +411,7 @@ class Teacher extends VaahModel
     public static function getList($request)
     {
         // dd($request);
-        $list = self::getSorted($request->filter);
+        $list = self::getSorted($request->filter)->with('subject')->with('gender');
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
@@ -494,6 +531,10 @@ class Teacher extends VaahModel
         }
 
         $items_id = collect($inputs['items'])->pluck('id')->toArray();
+
+        // Method 1 to delete all pivot table entries there might be better ways but I'm unaware about them at the moment
+        DB::table('sc_batch_sc_teacher')->whereIn('sc_teacher_id', $items_id)->delete();
+
         self::whereIn('id', $items_id)->forceDelete();
 
         $response['success'] = true;
@@ -533,6 +574,10 @@ class Teacher extends VaahModel
                     ->each->restore();
                 break;
             case 'delete-all':
+
+                // Directly deleting all rows and reseting auto increment without any teacher any data in the pivot table is irrelevent
+                DB::table('sc_batch_sc_teacher')->truncate();
+
                 $list->forceDelete();
                 break;
             case 'create-100-records':
@@ -620,17 +665,35 @@ class Teacher extends VaahModel
              return $response;
          }
 
-        $item = self::where('id', $id)->withTrashed()->first();
-        $item->fill($inputs);
-
+         $item = self::where('id', $id)->withTrashed()->first();
+         $item->fill($inputs);
+         
+        // Fetch the teacher record with batches
+        $teacher = self::where('id', $id)->with('batches')->first();
+        
         // Many to Many IMPL Blocks
         $batch_ids = $inputs['batches'];
-        unset($inputs['batches']);
-
+        
         $item->batches()->sync($batch_ids);
         $item->save();
         // Many to Many IMPL Block
+        
 
+        // Capture original batch IDs before sync
+        $originalBatchIds = $teacher->batches->pluck('id')->toArray();
+
+        sort($originalBatchIds);
+        sort($batch_ids);
+
+
+        // Compare old vs new batches
+        if ($originalBatchIds != $batch_ids) {
+            // Send email notification
+
+            if ($teacher->email) {
+                VaahMail::send(new BatchAssignmentMail($teacher), $teacher->email);
+            }
+        }
 
 
         $response = self::getItem($item->id);
@@ -732,7 +795,13 @@ class Teacher extends VaahModel
 
             $item =  new self();
             $item->fill($inputs);
+
+            // get all batch IDs
+            $batch_ids = $inputs['batches'];
             $item->save();
+
+            // Attach After saving the teacher item
+            $item->batches()->attach($batch_ids);
 
             $i++;
 
@@ -761,9 +830,17 @@ class Teacher extends VaahModel
          * You should also return relationship from here
          */
 
+        $inputs['is_active'] = 1;
+        $inputs['vh_taxonomy_gender_id'] = $faker->randomElement(self::getGender());
+        $inputs['vh_taxonomy_subject_id'] = $faker->randomElement(self::getSubject());
+        $batches = self::getAllBacthes();
+        $max_batches = $max_batches = min(count($batches), 10);
+        $inputs['batches'] = $faker->randomElements($batches, rand(1, $max_batches));
+
         if(!$is_response_return){
             return $inputs;
         }
+
 
         $response['success'] = true;
         $response['data']['fill'] = $inputs;

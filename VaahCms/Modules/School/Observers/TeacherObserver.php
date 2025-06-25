@@ -1,10 +1,10 @@
 <?php namespace VaahCms\Modules\School\Observers;
 
-use App\Mail\BatchAssignmentMail;
+use VaahCms\Modules\School\Mails\BatchAssignmentMail;
 use VaahCms\Modules\School\Models\Teacher;
 use WebReinvent\VaahCms\Libraries\VaahMail;
 
-class TeacherObserverObserver {
+class TeacherObserver {
 
     /**
      * Handle the User "created" event.

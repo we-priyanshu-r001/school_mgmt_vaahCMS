@@ -9,6 +9,7 @@ use WebReinvent\VaahCms\Models\VaahModel;
 use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
 use WebReinvent\VaahCms\Libraries\VaahSeeder;
+use WebReinvent\VaahCms\Models\Taxonomy;
 
 class Student extends VaahModel
 {
@@ -59,6 +60,19 @@ class Student extends VaahModel
     public function batch(){
         return $this->belongsTo(Batch::class, 'sc_batch_id');
     }
+
+    // Custom Utility Methods
+    public static function getGender(){
+        $genders = Taxonomy::getTaxonomyByType('genders');
+        // dd($genders->pluck('id')->toArray());
+        return $genders->pluck('id')->toArray();
+    }
+
+    public static function getAllBatches(){
+        $batches = Batch::all();
+        return $batches->pluck('id')->toArray();
+    }
+
 
     //-------------------------------------------------
     public static function getUnFillableColumns()
@@ -597,11 +611,9 @@ class Student extends VaahModel
 
         $rules = array(
             'name' => 'required|max:150',
-            // 'slug' => 'required|max:150',
             'email' => 'required|max:150',
-            'gender' => 'required|max:150',
+            'vh_taxonomy_gender_id' => 'required|integer',
             'dob' => 'required',
-            'batch' => 'required|max:150',
         );
 
         $validator = \Validator::make($inputs, $rules);
@@ -667,6 +679,11 @@ class Student extends VaahModel
          * You can override the filled variables below this line.
          * You should also return relationship from here
          */
+
+        $inputs['is_active'] = 1;
+        $inputs['vh_taxonomy_gender_id'] = $faker->randomElement(self::getGender());
+        $inputs['dob'] = $faker->date;
+        $inputs['sc_batch_id'] = $faker->randomElement(self::getAllBatches());
 
         if(!$is_response_return){
             return $inputs;

@@ -62,7 +62,7 @@ const useVaah = vaah();
                     <Badge v-if="prop.data.deleted_at"
                            value="Trashed"
                            severity="danger"></Badge>
-                    {{prop.data.subject}}
+                    {{prop.data.subject.name}}
                 </template>
 
             </Column>
@@ -88,7 +88,7 @@ const useVaah = vaah();
                 <Badge v-if="prop.data.deleted_at"
                         value="Trashed"
                         severity="danger"></Badge>
-                {{prop.data.gender}}
+                {{prop.data.gender.name}}
             </template>
 
             </Column>
@@ -105,7 +105,6 @@ const useVaah = vaah();
             </template>
 
             </Column>
-
 
                 <Column field="updated_at" header="Updated"
                         v-if="store.isViewLarge()"

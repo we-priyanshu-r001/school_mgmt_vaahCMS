@@ -704,6 +704,10 @@ class Batch extends VaahModel
          * You should also return relationship from here
          */
 
+        $inputs['is_active'] = 1;
+        $inputs['start_time'] = $faker->time('H:i');
+        $inputs['end_time'] = $faker->time('H:i');
+
         if(!$is_response_return){
             return $inputs;
         }

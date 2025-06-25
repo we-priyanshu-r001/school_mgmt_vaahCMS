@@ -166,7 +166,7 @@ const toggleFormMenu = (event) => {
                         <Dropdown v-model="store.item.vh_taxonomy_gender_id" 
                             :options="store.assets.genders" 
                             optionLabel="name"
-                            optionValue="name"
+                            optionValue="id"
                             placeholder="Select a Gender" 
                             class="w-full md:w-14rem" required/>
                         <div class="required-field hidden"></div>
@@ -192,7 +192,7 @@ const toggleFormMenu = (event) => {
                             optionLabel="name"
                             optionValue="id"
                             placeholder="Select a Batch" 
-                            class="w-full md:w-14rem" required/>
+                            class="w-full md:w-14rem" />
                         <div class="required-field hidden"></div>
                     </div>
                 </VhField>

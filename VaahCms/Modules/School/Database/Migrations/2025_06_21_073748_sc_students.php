@@ -38,7 +38,7 @@ class ScStudents extends Migration
                 $table->index(['created_at', 'updated_at', 'deleted_at']);
                 //----/common fields
 
-                $table->foreign('sc_batch_id')->references('id')->on('sc_batches');
+                $table->foreign('sc_batch_id')->references('id')->on('sc_batches')->nullOnDelete();
 
             });
         }

@@ -5,7 +5,7 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 use VaahCms\Modules\School\Models\Teacher;
-use VaahCms\Modules\School\Observers\TeacherObserverObserver;
+use VaahCms\Modules\School\Observers\TeacherObserver;
 use VaahCms\Modules\School\Providers\RouteServiceProvider;
 use VaahCms\Modules\School\Providers\EventServiceProvider;
 
@@ -35,7 +35,7 @@ class SchoolServiceProvider extends ServiceProvider
         $this->registerSeeders();
         $this->registerBladeDirectives();
         $this->registerBladeComponents();
-        Teacher::observe(TeacherObserverObserver::class);
+        Teacher::observe(TeacherObserver::class);
     }
 
 
