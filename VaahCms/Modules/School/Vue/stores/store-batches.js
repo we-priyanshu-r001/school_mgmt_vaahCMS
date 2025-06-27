@@ -52,6 +52,7 @@ export const useBatchStore = defineStore({
         route_prefix: 'batches.',
         view: 'large',
         show_filters: false,
+        show_advance_filters: false,
         list_view_width: 12,
         form: {
             type: 'Create',
@@ -244,6 +245,7 @@ export const useBatchStore = defineStore({
         {
             if(data)
             {
+                // console.log(`data from getList: ${data}`)
                 this.item = data;
             }else{
                 this.$router.push({name: 'batches.index',query:this.query});

@@ -147,7 +147,7 @@ const store = useTeacherStore();
                     <Dropdown v-model="store.query.filter.subject" 
                             :options="store.assets.subjects"
                             data-testid="teachers-filters-subject-only"
-                            optionLabel="name"
+                            filter optionLabel="name"
                             optionValue="id"
                             placeholder="Select a Subject" 
                             class="w-full md:w-14rem" />
@@ -162,16 +162,15 @@ const store = useTeacherStore();
                     <b>Genders:</b>
                 </template>
 
-                <div class="flex gap-1">
-                    <Dropdown v-model="store.query.filter.gender" 
-                            :options="store.assets.genders"
-                            data-testid="teachers-filters-gender-only"
-                            optionLabel="name"
-                            optionValue="id"
-                            placeholder="Select a gender" 
-                            class="w-full md:w-14rem" />
-                    <!-- <label for="trashed-exclude" class="cursor-pointer">Subjects</label> -->
-                    <Button label="Reset" @click.prevent="store.query.filter.gender = null"/>
+                <div>
+                <Dropdown v-model="store.query.filter.gender" 
+                        :options="store.assets.genders" 
+                        filter optionLabel="name" 
+                        optionValue="id"
+                        data-testid="teachers-filters-gender-only"  
+                        placeholder="Select a Gender" 
+                        class="w-full md:w-14rem">
+                </Dropdown>
                 </div>
 
             </VhFieldVertical>
@@ -185,7 +184,7 @@ const store = useTeacherStore();
                     <Dropdown v-model="store.query.filter.batches" 
                             :options="store.assets.batches"
                             data-testid="teachers-filters-batch-only"
-                            optionLabel="name"
+                            filter optionLabel="name"
                             optionValue="name"
                             placeholder="Select a batch" 
                             class="w-full md:w-14rem" />

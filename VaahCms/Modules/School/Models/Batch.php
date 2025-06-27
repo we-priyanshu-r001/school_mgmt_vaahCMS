@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Faker\Factory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\DB;
+use VaahCms\Modules\School\Traits\DeleteMailTrait;
 use WebReinvent\VaahCms\Models\VaahModel;
 use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
@@ -18,6 +19,7 @@ class Batch extends VaahModel
 
     use SoftDeletes;
     use CrudWithUuidObservantTrait;
+    use DeleteMailTrait;
 
     //-------------------------------------------------
     protected $table = 'sc_batches';
@@ -334,12 +336,44 @@ class Batch extends VaahModel
 
     }
     //-------------------------------------------------
+    public function scopeStudentCountFilter($query, $filter)
+    {
+
+        if(!isset($filter['student_count_min']) && !isset($filter['student_count_max']))
+        {
+            return $query;
+        }
+        $max = $filter['student_count_max'];
+        $min = $filter['student_count_min'];
+
+        return $query->withCount('students')
+        ->having('students_count', '>=', $min)
+        ->having('students_count', '<=', $max);
+    }
+    //-------------------------------------------------
+    public function scopeTeacherCountFilter($query, $filter)
+    {
+
+        if(!isset($filter['teacher_count_min']) && !isset($filter['teacher_count_max']))
+        {
+            return $query;
+        }
+        $max = $filter['teacher_count_max'];
+        $min = $filter['teacher_count_min'];
+
+        return $query->withCount('teachers')
+        ->having('teachers_count', '>=', $min)
+        ->having('teachers_count', '<=', $max);
+    }
+    //-------------------------------------------------
     public static function getList($request)
     {
         $list = self::getSorted($request->filter);
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
+        $list->studentCountFilter($request->filter);
+        $list->teacherCountFilter($request->filter);
 
         $rows = config('vaahcms.per_page');
 
@@ -402,8 +436,10 @@ class Batch extends VaahModel
                 })->update(['is_active' => 1]);
                 break;
             case 'trash':
-                self::whereIn('id', $items_id)
-                    ->get()->each->delete();
+                   $records = self::whereIn('id', $items_id)
+                    ->get();
+                $records->each->delete();
+                self::sendDeleteMail($records);
                 break;
             case 'restore':
                 self::whereIn('id', $items_id)->onlyTrashed()
@@ -480,7 +516,9 @@ class Batch extends VaahModel
                     ->update(['is_active' => null]);
                 break;
             case 'trash-all':
-                $list->get()->each->delete();
+                $records = $list->get();
+                $records->each->delete();
+                self::sendDeleteMail($records);
                 break;
             case 'restore-all':
                 $list->onlyTrashed()->get()
@@ -620,8 +658,9 @@ class Batch extends VaahModel
                     ->update(['is_active' => null]);
                 break;
             case 'trash':
-                self::find($id)
-                    ->delete();
+                $item = self::find($id);
+                $item->delete();
+                self::sendDeleteMail($item);
                 break;
             case 'restore':
                 self::where('id', $id)

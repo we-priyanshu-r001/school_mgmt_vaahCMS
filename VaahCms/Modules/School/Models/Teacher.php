@@ -13,9 +13,11 @@ use WebReinvent\VaahCms\Models\User;
 use WebReinvent\VaahCms\Libraries\VaahSeeder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\DB;
+use VaahCms\Modules\School\Mails\SuperAdminRecordDeletedMail;
 // use VaahCms\Modules\School\Models\Teacher;
 use WebReinvent\VaahCms\Libraries\VaahMail;
 use WebReinvent\VaahCms\Models\Taxonomy;
+use VaahCms\Modules\School\Traits\DeleteMailTrait;
 
 
 
@@ -24,6 +26,7 @@ class Teacher extends VaahModel
 
     use SoftDeletes;
     use CrudWithUuidObservantTrait;
+    use DeleteMailTrait;
 
     //-------------------------------------------------
     protected $table = 'sc_teachers';
@@ -89,7 +92,6 @@ class Teacher extends VaahModel
     // Custom Utility Methods
     public static function getGender(){
         $genders = Taxonomy::getTaxonomyByType('genders');
-        // dd($genders->pluck('id')->toArray());
         return $genders->pluck('id')->toArray();
     }
 
@@ -103,6 +105,16 @@ class Teacher extends VaahModel
         $batches = Batch::all();
         // dd($batches->pluck('id')->toArray());
         return $batches->pluck('id')->toArray();
+    }
+
+    public static function sendBulkDeleteMail($collection){
+        
+        // dd($collection);
+        $super_admin = User::whereHas('roles', function($role) {
+        $role->where('name', 'Super Administrator');
+        })->first();
+        VaahMail::addInQueue(new SuperAdminRecordDeletedMail($collection, $super_admin), $super_admin->email);
+    
     }
 
 
@@ -261,11 +273,11 @@ class Teacher extends VaahModel
 
         // Temporariliy Disabled
         // Send Mail to teacher 
-        // $item->load('batches');
+        $item->load('batches');
 
-        // if ($item->email) {
-        //     VaahMail::send(new BatchAssignmentMail($item), $item->email);
-        // }
+        if ($item->email) {
+            VaahMail::send(new BatchAssignmentMail($item), $item->email);
+        }
 
         $response = self::getItem($item->id);
         $response['messages'][] = trans("vaahcms-general.saved_successfully");
@@ -369,6 +381,23 @@ class Teacher extends VaahModel
 
     }
     //-------------------------------------------------
+    public function scopeBatchCountFilter($query, $filter)
+    {
+        // dd($query);
+
+        if(!isset($filter['batch_count_min']) && !isset($filter['batch_count_max']))
+        {
+            return $query;
+        }
+        $max = $filter['batch_count_max'];
+        $min = $filter['batch_count_min'];
+
+       return $query->withCount('batches')
+          ->having('batches_count', '>=', $min)
+          ->having('batches_count', '<=', $max);
+
+    }
+    //-------------------------------------------------
     public function scopeGenderFilter($query, $filter)
     {
         // dd($query);
@@ -418,6 +447,7 @@ class Teacher extends VaahModel
         $list->subjectFilter($request->filter);
         $list->genderFilter($request->filter);
         $list->batchFilter($request->filter);
+        $list->batchCountFilter($request->filter);
 
 
         
@@ -429,14 +459,6 @@ class Teacher extends VaahModel
         }
         
         $list = $list->paginate($rows);
-
-        // agregate Data code block
-        // foreach ($list->items() as $teacher) {
-
-        //     // Append custom attribute (not persisted)
-        //     $teacher->batch_count = $teacher->batches()->count() ?? null;
-        // }
-
 
         $response['success'] = true;
         $response['data'] = $list;
@@ -490,8 +512,10 @@ class Teacher extends VaahModel
                 })->update(['is_active' => 1]);
                 break;
             case 'trash':
-                self::whereIn('id', $items_id)
-                    ->get()->each->delete();
+                $records = self::whereIn('id', $items_id)
+                    ->get();
+                $records->each->delete();
+                self::sendDeleteMail($records);
                 break;
             case 'restore':
                 self::whereIn('id', $items_id)->onlyTrashed()
@@ -567,7 +591,9 @@ class Teacher extends VaahModel
                     ->update(['is_active' => null]);
                 break;
             case 'trash-all':
-                $list->get()->each->delete();
+                $records = $list->get();
+                $records->each->delete();
+                self::sendDeleteMail($records);
                 break;
             case 'restore-all':
                 $list->onlyTrashed()->get()
@@ -613,7 +639,7 @@ class Teacher extends VaahModel
     {
 
         $item = self::where('id', $id)
-            ->with(['createdByUser', 'updatedByUser', 'deletedByUser'])
+            ->with(['createdByUser', 'updatedByUser', 'deletedByUser', 'subject', 'gender'])
             ->with('batches')
             ->withTrashed()
             ->first();
@@ -737,8 +763,9 @@ class Teacher extends VaahModel
                     ->update(['is_active' => null]);
                 break;
             case 'trash':
-                self::find($id)
-                    ->delete();
+                $item = self::find($id);
+                $item->delete();
+                self::sendDeleteMail($item);
                 break;
             case 'restore':
                 self::where('id', $id)
@@ -837,7 +864,7 @@ class Teacher extends VaahModel
         $inputs['vh_taxonomy_subject_id'] = $faker->randomElement(self::getSubject());
         $batches = self::getAllBacthes();
         $max_batches = $max_batches = min(count($batches), 10);
-        $inputs['batches'] = $faker->randomElements($batches, rand(1, $max_batches));
+        $inputs['batches'] = $faker->randomElements($batches, rand(0, $max_batches));
 
         if(!$is_response_return){
             return $inputs;

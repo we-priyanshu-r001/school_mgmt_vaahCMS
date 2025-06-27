@@ -4,7 +4,10 @@
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use VaahCms\Modules\School\Models\Batch;
+use VaahCms\Modules\School\Models\Student;
 use VaahCms\Modules\School\Models\Teacher;
+use VaahCms\Modules\School\Observers\GlobalModelObserver;
 use VaahCms\Modules\School\Observers\TeacherObserver;
 use VaahCms\Modules\School\Providers\RouteServiceProvider;
 use VaahCms\Modules\School\Providers\EventServiceProvider;
@@ -26,6 +29,13 @@ class SchoolServiceProvider extends ServiceProvider
     public function boot(Router $router)
     {
 
+        $models = [
+        Teacher::class,
+        Student::class,
+        Batch::class,
+        // Add more models here
+        ];
+
         $this->registerMiddleware($router);
         $this->registerTranslations();
         $this->registerConfig();
@@ -35,8 +45,16 @@ class SchoolServiceProvider extends ServiceProvider
         $this->registerSeeders();
         $this->registerBladeDirectives();
         $this->registerBladeComponents();
-        Teacher::observe(TeacherObserver::class);
+        // Teacher::observe(TeacherObserver::class);
+
+        foreach ($models as $model) {
+            $model::observe(GlobalModelObserver::class);
+        }
+
     }
+
+
+
 
 
     /**

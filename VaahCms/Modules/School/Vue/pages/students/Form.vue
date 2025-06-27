@@ -189,7 +189,7 @@ const toggleFormMenu = (event) => {
                     <div class="p-inputgroup">
                         <Dropdown v-model="store.item.sc_batch_id" 
                             :options="store.assets.batches" 
-                            optionLabel="name"
+                            filter optionLabel="name"
                             optionValue="id"
                             placeholder="Select a Batch" 
                             class="w-full md:w-14rem" />

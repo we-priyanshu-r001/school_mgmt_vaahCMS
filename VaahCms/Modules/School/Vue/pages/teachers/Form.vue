@@ -201,7 +201,7 @@ const toggleFormMenu = (event) => {
                         v-model="store.item.batches" 
                         display="chip" 
                         :options="store.assets.batches" 
-                        optionLabel="name" 
+                        filter optionLabel="name" 
                         optionValue="id" 
                         placeholder="Select Batches"
                         class="w-full md:w-20rem" />

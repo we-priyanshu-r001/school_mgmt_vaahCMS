@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {useRoute} from 'vue-router';
 
 import { useTeacherStore } from '../../stores/store-teachers'
@@ -7,6 +7,10 @@ import { useTeacherStore } from '../../stores/store-teachers'
 import VhViewRow from '../../vaahvue/vue-three/primeflex/VhViewRow.vue';
 const store = useTeacherStore();
 const route = useRoute();
+
+const batchNames = computed(() => {
+    return store.item.batches.map(batch => batch);
+});
 
 onMounted(async () => {
 
@@ -122,8 +126,8 @@ const toggleItemMenu = (event) => {
                     <template v-for="(value, column) in store.item ">
 
                         <template v-if="column === 'created_by' || column === 'updated_by'
-                        || column === 'deleted_by' || column == 'vh_taxonomy_gender_id'
-                        || column === 'vh_taxonomy_subject_id' || column === 'batches' ">
+                        || column === 'deleted_by' || column == 'gender'
+                        || column === 'subject' || column === 'batches_obj'">
                         </template>
 
                         <template v-else-if="column === 'id' || column === 'uuid'">
@@ -131,6 +135,39 @@ const toggleItemMenu = (event) => {
                                        :value="value"
                                        :can_copy="true"
                             />
+                        </template>
+
+                        <template v-else-if="column === 'vh_taxonomy_subject_id'">
+                            <VhViewRow label="Subject"
+                                       :value="store.item.subject.name"
+                                       :can_copy="true"
+                            />
+                        </template>
+
+                        <template v-else-if="column === 'vh_taxonomy_gender_id'">
+                            <VhViewRow label="Gender"
+                                       :value="store.item.gender.name"
+                                       :can_copy="true"
+                            />
+                        </template>
+
+                        <template v-else-if="column === 'batches' && Array.isArray(value)">
+                           <VhViewRow label="Batches" type="array">
+                            <span
+                                v-tooltip.bottom="store.item.batches_obj.map(b => b.name).join(', ')"
+                                class="flex flex-wrap items-center"
+                            >
+                                <Tag
+                                v-for="(batch) in store.item.batches.slice(0, 3)"
+                                :key="batch.id"
+                                :value="batch.name"
+                                class="mr-1 mb-1"
+                                />
+                                <span v-if="store.item.batches.length > 3" class="text-gray-500 text-sm">
+                                +{{ store.item.batches.length - 3 }} more
+                                </span>
+                            </span>
+                            </VhViewRow>
                         </template>
 
                         <template v-else-if="(column === 'created_by_user' || column === 'updated_by_user'

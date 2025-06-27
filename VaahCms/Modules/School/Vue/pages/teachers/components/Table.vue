@@ -54,7 +54,7 @@ const useVaah = vaah();
 
             </Column>
 
-            <Column field="subject" header="Subject"
+            <Column field="subject.name" header="Subject"
                     class="overflow-wrap-anywhere"
                     :sortable="true">
 
@@ -80,7 +80,7 @@ const useVaah = vaah();
 
             </Column>
 
-            <Column field="gender" header="Gender"
+            <Column field="vh_taxonomy_gender_id" header="Gender"
                 class="overflow-wrap-anywhere"
                 :sortable="true">
 

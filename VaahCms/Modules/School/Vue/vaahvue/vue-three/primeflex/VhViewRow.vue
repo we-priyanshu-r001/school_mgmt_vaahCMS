@@ -52,6 +52,11 @@ const props = defineProps({
                 <Tag v-else value="No" severity="danger"></Tag>
             </td>
         </template>
+        <template v-else-if="type==='array'">
+            <td colspan="2">
+                <slot></slot>
+            </td>
+        </template>
         <template v-else>
             <td  colspan="2" v-html="value"></td>
         </template>

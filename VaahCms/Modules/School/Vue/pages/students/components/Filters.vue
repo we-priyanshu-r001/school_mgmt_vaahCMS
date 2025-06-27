@@ -153,11 +153,10 @@ const store = useStudentStore();
                     <Dropdown v-model="store.query.filter.batch" 
                             :options="store.assets.batches"
                             data-testid="teachers-filters-batch-only"
-                            optionLabel="name"
+                            filter optionLabel="name"
                             optionValue="id"
                             placeholder="Select a Batch" 
                             class="w-full md:w-14rem" />
-                    <!-- <label for="trashed-exclude" class="cursor-pointer">Subjects</label> -->
                 </div>
 
             </VhFieldVertical>

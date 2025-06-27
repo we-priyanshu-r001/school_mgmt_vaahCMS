@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Faker\Factory;
+use VaahCms\Modules\School\Traits\DeleteMailTrait;
 use WebReinvent\VaahCms\Models\VaahModel;
 use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
@@ -16,6 +17,7 @@ class Student extends VaahModel
 
     use SoftDeletes;
     use CrudWithUuidObservantTrait;
+    use DeleteMailTrait;
 
     //-------------------------------------------------
     protected $table = 'sc_students';
@@ -59,6 +61,10 @@ class Student extends VaahModel
     // Relation Methods
     public function batch(){
         return $this->belongsTo(Batch::class, 'sc_batch_id');
+    }
+
+    public function gender(){
+        return $this->belongsTo(Taxonomy::class, 'vh_taxonomy_gender_id', 'id');
     }
 
     // Custom Utility Methods
@@ -289,6 +295,20 @@ class Student extends VaahModel
         return $query->where('sc_batch_id', $batch);
 
     }
+
+    public function scopeGenderFilter($query, $filter)
+    {
+        // dd($query);
+
+        if(!isset($filter['gender']))
+        {
+            return $query;
+        }
+        $gender = $filter['gender'];
+
+        return $query->where('vh_taxonomy_gender_id', $gender);
+
+    }
     //-------------------------------------------------
     public function scopeSearchFilter($query, $filter)
     {
@@ -315,6 +335,7 @@ class Student extends VaahModel
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
         $list->batchFilter($request->filter);
+        $list->genderFilter($request->filter);
 
         $rows = config('vaahcms.per_page');
 
@@ -385,8 +406,10 @@ class Student extends VaahModel
                 })->update(['is_active' => 1]);
                 break;
             case 'trash':
-                self::whereIn('id', $items_id)
-                    ->get()->each->delete();
+                   $records = self::whereIn('id', $items_id)
+                    ->get();
+                $records->each->delete();
+                self::sendDeleteMail($records);
                 break;
             case 'restore':
                 self::whereIn('id', $items_id)->onlyTrashed()
@@ -458,7 +481,9 @@ class Student extends VaahModel
                     ->update(['is_active' => null]);
                 break;
             case 'trash-all':
-                $list->get()->each->delete();
+                $records = $list->get();
+                $records->each->delete();
+                self::sendDeleteMail($records);
                 break;
             case 'restore-all':
                 $list->onlyTrashed()->get()
@@ -500,7 +525,7 @@ class Student extends VaahModel
     {
 
         $item = self::where('id', $id)
-            ->with(['createdByUser', 'updatedByUser', 'deletedByUser'])
+            ->with(['createdByUser', 'updatedByUser', 'deletedByUser', 'batch', 'gender'])
             ->withTrashed()
             ->first();
 
@@ -592,8 +617,9 @@ class Student extends VaahModel
                     ->update(['is_active' => null]);
                 break;
             case 'trash':
-                self::find($id)
-                    ->delete();
+                $item = self::find($id);
+                $item->delete();
+                self::sendDeleteMail($item);
                 break;
             case 'restore':
                 self::where('id', $id)

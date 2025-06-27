@@ -9,6 +9,7 @@ function extractBatchIDs(data){
     if(!data['batches']){
         return null
     }
+    data['batches_obj'] = data['batches']
     data['batches'] = data['batches'].map((batch) => {return batch['id']})
     return data
 }
@@ -59,6 +60,7 @@ export const useTeacherStore = defineStore({
         route_prefix: 'teachers.',
         view: 'large',
         show_filters: false,
+        show_advance_filters: false,
         list_view_width: 12,
         form: {
             type: 'Create',
@@ -117,6 +119,7 @@ export const useTeacherStore = defineStore({
                     this.view = 'small';
                     this.list_view_width = 6;
                     this.show_filters = false;
+                    this.show_advance_filters = false;
                     break
             }
         },

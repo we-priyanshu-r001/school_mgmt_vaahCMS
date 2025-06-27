@@ -42,7 +42,7 @@ const useVaah = vaah();
             </Column>
 
 
-            <Column field="batch" header="Batch"
+            <Column field="batch.name" header="Batch"
                     class="overflow-wrap-anywhere"
                     :sortable="true">
 
