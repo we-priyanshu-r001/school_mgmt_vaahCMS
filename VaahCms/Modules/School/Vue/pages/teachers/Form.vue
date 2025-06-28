@@ -194,7 +194,7 @@ const toggleFormMenu = (event) => {
                         <div class="required-field hidden"></div>
                     </div>
                 </VhField>
-                <!-- {{ store.item.batches }} -->
+                
                 <VhField label="Batches">
                     <div class="p-inputgroup">
                         <MultiSelect 
@@ -208,17 +208,6 @@ const toggleFormMenu = (event) => {
                         <div class="required-field hidden"></div>
                     </div>
                 </VhField>
-
-                <!-- <VhField label="Slug">
-                    <div class="p-inputgroup">
-                        <InputText class="w-full"
-                                   placeholder="Enter the slug"
-                                   name="teachers-slug"
-                                   data-testid="teachers-slug"
-                                   v-model="store.item.slug" required/>
-                        <div class="required-field hidden"></div>
-                    </div>
-                </VhField> -->
 
                 <VhField label="Is Active">
                     <InputSwitch v-bind:false-value="0"

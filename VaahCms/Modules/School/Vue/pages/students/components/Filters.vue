@@ -137,31 +137,6 @@ const store = useStudentStore();
 
             </VhFieldVertical>
 
-            <VhFieldVertical >
-                <template #label>
-                    <div class="flex items-center justify-between gap-8 w-full">
-                        <span class="font-semibold text-sm text-gray-700">Batch:</span>
-                        <Button 
-                            label="Reset" 
-                            class="text-sm px-2 py-1"
-                            @click.prevent="store.query.filter.batch = null" 
-                        />
-                    </div>
-                </template>
-
-                <div >
-                    <Dropdown v-model="store.query.filter.batch" 
-                            :options="store.assets.batches"
-                            data-testid="teachers-filters-batch-only"
-                            filter optionLabel="name"
-                            optionValue="id"
-                            placeholder="Select a Batch" 
-                            class="w-full md:w-14rem" />
-                </div>
-
-            </VhFieldVertical>
-
-
         </Panel>
 
     </div>

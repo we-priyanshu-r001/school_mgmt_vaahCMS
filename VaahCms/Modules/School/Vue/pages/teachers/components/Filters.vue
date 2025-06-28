@@ -134,67 +134,7 @@ const store = useTeacherStore();
                                  v-model="store.query.filter.trashed" />
                     <label for="trashed-only" class="cursor-pointer">Only Trashed</label>
                 </div>
-
             </VhFieldVertical>
-
-
-            <VhFieldVertical >
-                <template #label>
-                    <b>Subjects:</b>
-                </template>
-
-                <div class="flex gap-1">
-                    <Dropdown v-model="store.query.filter.subject" 
-                            :options="store.assets.subjects"
-                            data-testid="teachers-filters-subject-only"
-                            filter optionLabel="name"
-                            optionValue="id"
-                            placeholder="Select a Subject" 
-                            class="w-full md:w-14rem" />
-                    <!-- <label for="trashed-exclude" class="cursor-pointer">Subjects</label> -->
-                    <Button label="Reset" @click.prevent="store.query.filter.subject = null"/>
-                </div>
-
-            </VhFieldVertical>
-
-            <VhFieldVertical >
-                <template #label>
-                    <b>Genders:</b>
-                </template>
-
-                <div>
-                <Dropdown v-model="store.query.filter.gender" 
-                        :options="store.assets.genders" 
-                        filter optionLabel="name" 
-                        optionValue="id"
-                        data-testid="teachers-filters-gender-only"  
-                        placeholder="Select a Gender" 
-                        class="w-full md:w-14rem">
-                </Dropdown>
-                </div>
-
-            </VhFieldVertical>
-
-            <VhFieldVertical >
-                <template #label>
-                    <b>Batches:</b>
-                </template>
-
-                <div class="flex gap-1">
-                    <Dropdown v-model="store.query.filter.batches" 
-                            :options="store.assets.batches"
-                            data-testid="teachers-filters-batch-only"
-                            filter optionLabel="name"
-                            optionValue="name"
-                            placeholder="Select a batch" 
-                            class="w-full md:w-14rem" />
-                    <!-- <label for="trashed-exclude" class="cursor-pointer">Subjects</label> -->
-                    <Button label="Reset" @click.prevent="store.query.filter.batches = null"/>
-                </div>
-
-            </VhFieldVertical>
-
-
         </Panel>
 
     </div>

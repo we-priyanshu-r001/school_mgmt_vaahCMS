@@ -43,36 +43,48 @@ const store = useStudentStore();
                 </template>
 
                 <div class="flex gap-1">
-                    <Dropdown v-model="store.query.filter.batch" 
-                            :options="store.assets.batches"
-                            data-testid="teachers-filters-batch-only"
-                            filter optionLabel="name"
-                            optionValue="id"
+                        <MultiSelect 
+                            v-model="store.query.filter.batch" 
+                            display="chip" 
+                            :options="store.assets.batches" 
+                            filter optionLabel="name" 
+                            optionValue="id" 
+                            data-testid="teachers-filters-batch-only"  
                             placeholder="Select a Batch" 
                             class="w-full md:w-14rem" />
+                            
                     <Button label="Reset" @click.prevent="store.query.filter.batch = null"/>
                 </div>
 
             </VhFieldVertical>
 
-              <VhFieldVertical >
+            <VhFieldVertical >
                 <template #label>
                     <b>Genders:</b>
                 </template>
 
                 <div class="flex gap-1">
-                <Dropdown v-model="store.query.filter.gender" 
-                        :options="store.assets.genders" 
-                        filter optionLabel="name" 
-                        optionValue="id"
-                        data-testid="teachers-filters-gender-only"  
-                        placeholder="Select a Gender" 
-                        class="w-full md:w-14rem">
-                </Dropdown>
-                <Button label="Reset" @click.prevent="store.query.filter.gender = null"/>
+                    <MultiSelect 
+                            v-model="store.query.filter.gender" 
+                            display="chip" 
+                            :options="store.assets.genders" 
+                            filter optionLabel="name" 
+                            optionValue="id" 
+                            data-testid="teachers-filters-gender-only"  
+                            placeholder="Select a Gender" 
+                            class="w-full md:w-14rem" />
+                    <Button label="Reset" @click.prevent="store.query.filter.gender = null"/>
                 </div>
 
             </VhFieldVertical>
+
+
+             <VhField label="Batches">
+                    <div class="p-inputgroup">
+                        
+                        <div class="required-field hidden"></div>
+                    </div>
+            </VhField>
 
 
         </Panel>

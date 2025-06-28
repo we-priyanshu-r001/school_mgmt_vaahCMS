@@ -361,7 +361,7 @@ class Teacher extends VaahModel
         }
         $subject = $filter['subject'];
 
-        return $query->where('vh_taxonomy_subject_id', $subject);
+        return $query->whereIn('vh_taxonomy_subject_id', $subject);
 
     }
     //-------------------------------------------------
@@ -376,7 +376,7 @@ class Teacher extends VaahModel
         $batch = $filter['batches'];
 
         return $query->whereHas('batches', function ($q1) use ($batch) {
-            $q1->where('name', $batch);
+            $q1->whereIn('name', $batch);
         });
 
     }
@@ -408,7 +408,7 @@ class Teacher extends VaahModel
         }
         $gender = $filter['gender'];
 
-        return $query->where('vh_taxonomy_gender_id', $gender);
+        return $query->whereIn('vh_taxonomy_gender_id', $gender);
 
     }
     //-------------------------------------------------

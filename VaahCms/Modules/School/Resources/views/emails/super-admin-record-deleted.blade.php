@@ -37,28 +37,33 @@
                 </p>
 
                 @if(is_iterable($collection) && count($collection) > 1)
-                    <p style="font-size: 15px; color: #555555; margin: 0 0 20px 0;">
-                        This is to inform you that the following records have been <strong>deleted</strong> from the system. Below are the details:
+                    @php
+                        $firstRecord = $collection->first();
+                    @endphp
+
+                    <p style="font-size: 15px; color: #555555; margin: 0 0 10px 0;">
+                        This is to inform you that the following records have been <strong>deleted</strong> from the system.
+                    </p>
+
+                    <p style="font-size: 14px; color: #777777; margin: 0 0 20px 0;">
+                        <strong>Deleted At:</strong> {{ $firstRecord->deleted_at }}<br>
+                        <strong>Deleted By:</strong> {{ $firstRecord->deletedByUser->name ?? 'System' }}
                     </p>
 
                     <table cellpadding="0" cellspacing="0" width="100%" style="margin-top: 10px; font-size: 14px; color: #333;">
                         <thead>
                             <tr>
-                                <th>Model</th>
                                 <th>Record ID</th>
+                                <th>Section</th>
                                 <th>Record Name</th>
-                                <th>Deleted By</th>
-                                <th>Deleted At</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($collection as $record)
                                 <tr>
-                                    <td>{{ class_basename($record) }}</td>
                                     <td>{{ $record->id }}</td>
+                                    <td>{{ class_basename($record) }}</td>
                                     <td>{{ $record->name ?? '—' }}</td>
-                                    <td>{{ $record->deletedByUser->name ?? 'System' }}</td>
-                                    <td>{{ $record->deleted_at }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -75,23 +80,23 @@
                     <table cellpadding="0" cellspacing="0" width="100%" style="margin-top: 10px; font-size: 14px; color: #333;">
                         <tr>
                             <th>Model</th>
-                            <td>{{ class_basename($collection) }}</td>
+                            <td>{{ class_basename($record) }}</td>
                         </tr>
                         <tr>
                             <th>Record ID</th>
-                            <td>{{ $collection->id }}</td>
+                            <td>{{ $record->id }}</td>
                         </tr>
                         <tr>
                             <th>Record Name</th>
-                            <td>{{ $collection->name ?? '—' }}</td>
+                            <td>{{ $record->name ?? '—' }}</td>
                         </tr>
                         <tr>
                             <th>Deleted By</th>
-                            <td>{{ $collection->deletedByUser->name ?? 'System' }}</td>
+                            <td>{{ $record->deletedByUser->name ?? 'System' }}</td>
                         </tr>
                         <tr>
                             <th>Deleted At</th>
-                            <td>{{ $collection->deleted_at }}</td>
+                            <td>{{ $record->deleted_at }}</td>
                         </tr>
                     </table>
                 @endif

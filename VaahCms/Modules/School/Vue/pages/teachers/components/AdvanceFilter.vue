@@ -49,14 +49,15 @@ watch(batch_count_range, (range) => {
                 </template>
 
                 <div class="flex gap-1">
-                    <Dropdown v-model="store.query.filter.subject" 
-                            :options="store.assets.subjects"
-                            data-testid="teachers-filters-subject-only"
-                            filter optionLabel="name"
-                            optionValue="id"
-                            placeholder="Select a Subject" 
-                            class="w-full md:w-14rem" />
-                    <!-- <label for="trashed-exclude" class="cursor-pointer">Subjects</label> -->
+                    <MultiSelect 
+                        v-model="store.query.filter.subject" 
+                        display="chip" 
+                        :options="store.assets.subjects" 
+                        filter optionLabel="name" 
+                        optionValue="id" 
+                        data-testid="teachers-filters-subject-only"  
+                        placeholder="Select a Subject" 
+                        class="w-full md:w-14rem" />
                     <Button label="Reset" @click.prevent="store.query.filter.subject = null"/>
                 </div>
 
@@ -67,15 +68,17 @@ watch(batch_count_range, (range) => {
                     <b>Genders:</b>
                 </template>
 
-                <div>
-                <Dropdown v-model="store.query.filter.gender" 
+                <div class="flex gap-1">
+                    <MultiSelect 
+                        v-model="store.query.filter.gender" 
+                        display="chip" 
                         :options="store.assets.genders" 
                         filter optionLabel="name" 
-                        optionValue="id"
+                        optionValue="id" 
                         data-testid="teachers-filters-gender-only"  
-                        placeholder="Select a Gender" 
-                        class="w-full md:w-14rem">
-                </Dropdown>
+                        placeholder="Select Genders" 
+                        class="w-full md:w-14rem" />
+                    <Button label="Reset" @click.prevent="store.query.filter.gender = null"/>
                 </div>
 
             </VhFieldVertical>
@@ -86,14 +89,15 @@ watch(batch_count_range, (range) => {
                 </template>
 
                 <div class="flex gap-1">
-                    <Dropdown v-model="store.query.filter.batches" 
-                            :options="store.assets.batches"
-                            data-testid="teachers-filters-batch-only"
-                            filter optionLabel="name"
-                            optionValue="name"
-                            placeholder="Select a batch" 
-                            class="w-full md:w-14rem" />
-                    <!-- <label for="trashed-exclude" class="cursor-pointer">Subjects</label> -->
+                    <MultiSelect 
+                        v-model="store.query.filter.batches" 
+                        display="chip" 
+                        :options="store.assets.batches" 
+                        filter optionLabel="name" 
+                        optionValue="name" 
+                        data-testid="teachers-filters-batch-only"  
+                        placeholder="Select a Batch" 
+                        class="w-full md:w-14rem" />
                     <Button label="Reset" @click.prevent="store.query.filter.batches = null"/>
                 </div>
 

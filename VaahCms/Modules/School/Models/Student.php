@@ -284,16 +284,13 @@ class Student extends VaahModel
     //-------------------------------------------------
     public function scopeBatchFilter($query, $filter)
     {
-        // dd($query);
-
         if(!isset($filter['batch']))
         {
             return $query;
         }
         $batch = $filter['batch'];
 
-        return $query->where('sc_batch_id', $batch);
-
+        return $query->whereIn('sc_batch_id', $batch);
     }
 
     public function scopeGenderFilter($query, $filter)
@@ -306,7 +303,7 @@ class Student extends VaahModel
         }
         $gender = $filter['gender'];
 
-        return $query->where('vh_taxonomy_gender_id', $gender);
+        return $query->whereIn('vh_taxonomy_gender_id', $gender);
 
     }
     //-------------------------------------------------
