@@ -325,6 +325,19 @@ class Student extends VaahModel
 
     }
     //-------------------------------------------------
+    public function scopeBatchClickFilter($query, $filter)
+    {
+        if(!isset($filter['batch_id']))
+        {
+            return $query;
+        }
+        $id = $filter['batch_id'];
+
+        return $query->whereHas('batch', function ($q1) use ($id) {
+            $q1->where('sc_batches.id', $id);
+        });
+    }
+    //-------------------------------------------------
     public static function getList($request)
     {
         $list = self::getSorted($request->filter);
@@ -333,6 +346,7 @@ class Student extends VaahModel
         $list->searchFilter($request->filter);
         $list->batchFilter($request->filter);
         $list->genderFilter($request->filter);
+        $list->batchClickFilter($request->filter);
 
         $rows = config('vaahcms.per_page');
 
@@ -403,7 +417,7 @@ class Student extends VaahModel
                 })->update(['is_active' => 1]);
                 break;
             case 'trash':
-                   $records = self::whereIn('id', $items_id)
+                $records = self::whereIn('id', $items_id)
                     ->get();
                 $records->each->delete();
                 self::sendDeleteMail($records);
@@ -480,6 +494,9 @@ class Student extends VaahModel
             case 'trash-all':
                 $records = $list->get();
                 $records->each->delete();
+                if($records->isEmpty()){
+                    break;
+                }
                 self::sendDeleteMail($records);
                 break;
             case 'restore-all':

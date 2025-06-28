@@ -47,22 +47,21 @@
 
                     <p style="font-size: 14px; color: #777777; margin: 0 0 20px 0;">
                         <strong>Deleted At:</strong> {{ $firstRecord->deleted_at }}<br>
-                        <strong>Deleted By:</strong> {{ $firstRecord->deletedByUser->name ?? 'System' }}
+                        <strong>Deleted By:</strong> {{ $firstRecord->deletedByUser->name ?? 'System' }}<br>
+                        <strong>Section:</strong> {{ class_basename($firstRecord) }}
                     </p>
 
                     <table cellpadding="0" cellspacing="0" width="100%" style="margin-top: 10px; font-size: 14px; color: #333;">
                         <thead>
                             <tr>
-                                <th>Record ID</th>
-                                <th>Section</th>
-                                <th>Record Name</th>
+                                <th>ID</th>
+                                <th>Name</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($collection as $record)
                                 <tr>
                                     <td>{{ $record->id }}</td>
-                                    <td>{{ class_basename($record) }}</td>
                                     <td>{{ $record->name ?? '—' }}</td>
                                 </tr>
                             @endforeach

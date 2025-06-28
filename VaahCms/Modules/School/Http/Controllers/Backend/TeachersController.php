@@ -35,7 +35,10 @@ class TeachersController extends Controller
             $data['empty_item'] = Teacher::getEmptyItem();
             $data['genders'] = Taxonomy::getTaxonomyByType('genders');
             $data['subjects'] = Taxonomy::getTaxonomyByType('subjects');
-            $data['batches'] = Batch::all();
+
+            $batches = Batch::all();
+            $data['batches'] = $batches;
+            $data['total_batches'] = $batches->count();
 
             $data['actions'] = [];
 

@@ -3,7 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use VaahCms\Modules\School\Models\Batch;
-
+use VaahCms\Modules\School\Models\Student;
+use VaahCms\Modules\School\Models\Teacher;
 
 class BatchesController extends Controller
 {
@@ -31,7 +32,10 @@ class BatchesController extends Controller
             $data['fillable']['except'] = Batch::getUnFillableColumns();
             $data['empty_item'] = Batch::getEmptyItem();
 
+            $data['total_students'] = Student::all()->count();
+            $data['total_teachers'] = Teacher::all()->count();
             $data['actions'] = [];
+
 
             $response['success'] = true;
             $response['data'] = $data;

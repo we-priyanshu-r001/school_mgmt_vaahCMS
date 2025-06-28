@@ -64,7 +64,7 @@ watch(teacher_count_range, (range) => {
                             v-model="student_count_range"
                             range
                             :min="0"
-                            :max="50"
+                            :max="store.assets.total_students"
                             :step="1"
                             class="w-full"
                         />
@@ -87,7 +87,7 @@ watch(teacher_count_range, (range) => {
                             v-model="teacher_count_range"
                             range
                             :min="0"
-                            :max="50"
+                            :max="store.assets.total_teachers"
                             :step="1"
                             class="w-full"
                         />

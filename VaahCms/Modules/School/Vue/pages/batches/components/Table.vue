@@ -1,9 +1,30 @@
 <script setup>
 import { vaah } from '../../../vaahvue/pinia/vaah'
 import { useBatchStore } from '../../../stores/store-batches'
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 const store = useBatchStore();
 const useVaah = vaah();
+
+function handleTeacherClick(row_data){
+    router.push({
+        name: 'teachers.index',
+        query: {
+            filter: {batch_id: row_data},
+        }
+    });
+}
+
+function handleStudentClick(row_data){
+    router.push({
+        name: 'students.index',
+        query: {
+            filter: {batch_id: row_data},
+        }
+    });
+}
 
 </script>
 
@@ -50,7 +71,9 @@ const useVaah = vaah();
                     <Badge v-if="prop.data.deleted_at"
                            value="Trashed"
                            severity="danger"></Badge>
-                    {{prop.data.student_count}}
+                    <span class="cursor-pointer text-primary hover:text-blue-900" @click="handleStudentClick(prop.data.id)">
+                        {{prop.data.student_count}}
+                    </span>
                 </template>
 
             </Column>
@@ -63,7 +86,9 @@ const useVaah = vaah();
                     <Badge v-if="prop.data.deleted_at"
                            value="Trashed"
                            severity="danger"></Badge>
-                    {{prop.data.teacher_count}}
+                    <span class="cursor-pointer text-primary hover:text-blue-900" @click="handleTeacherClick(prop.data.id)">
+                        {{prop.data.teacher_count}}
+                    </span>
                 </template>
 
             </Column>

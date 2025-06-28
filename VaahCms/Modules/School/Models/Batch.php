@@ -366,6 +366,19 @@ class Batch extends VaahModel
         ->having('teachers_count', '<=', $max);
     }
     //-------------------------------------------------
+    public function scopeTeacherFilter($query, $filter)
+    {
+        if(!isset($filter['teacher_id']))
+        {
+            return $query;
+        }
+        $id = $filter['teacher_id'];
+
+        return $query->whereHas('teachers', function ($q1) use ($id) {
+            $q1->where('sc_teachers.id', $id);
+        });
+    }
+    //-------------------------------------------------
     public static function getList($request)
     {
         $list = self::getSorted($request->filter);
@@ -374,6 +387,7 @@ class Batch extends VaahModel
         $list->searchFilter($request->filter);
         $list->studentCountFilter($request->filter);
         $list->teacherCountFilter($request->filter);
+        $list->teacherFilter($request->filter);
 
         $rows = config('vaahcms.per_page');
 

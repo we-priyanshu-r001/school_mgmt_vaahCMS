@@ -381,6 +381,19 @@ class Teacher extends VaahModel
 
     }
     //-------------------------------------------------
+    public function scopeBatchClickFilter($query, $filter)
+    {
+        if(!isset($filter['batch_id']))
+        {
+            return $query;
+        }
+        $id = $filter['batch_id'];
+
+        return $query->whereHas('batches', function ($q1) use ($id) {
+            $q1->where('sc_batches.id', $id);
+        });
+    }
+    //-------------------------------------------------
     public function scopeBatchCountFilter($query, $filter)
     {
         // dd($query);
@@ -448,9 +461,8 @@ class Teacher extends VaahModel
         $list->genderFilter($request->filter);
         $list->batchFilter($request->filter);
         $list->batchCountFilter($request->filter);
+        $list->batchClickFilter($request->filter);
 
-
-        
         $rows = config('vaahcms.per_page');
         
         if($request->has('rows'))
@@ -564,7 +576,6 @@ class Teacher extends VaahModel
         $response['success'] = true;
         $response['data'] = true;
         $response['messages'][] = trans("vaahcms-general.action_successful");
-
         return $response;
     }
     //-------------------------------------------------
