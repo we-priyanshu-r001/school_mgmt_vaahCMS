@@ -12,7 +12,7 @@ function handleTeacherClick(row_data){
     router.push({
         name: 'teachers.index',
         query: {
-            filter: {batch_id: row_data},
+            filter: {batch_uuid: row_data},
         }
     });
 }
@@ -21,7 +21,7 @@ function handleStudentClick(row_data){
     router.push({
         name: 'students.index',
         query: {
-            filter: {batch_id: row_data},
+            filter: {batch_uuid: row_data},
         }
     });
 }
@@ -71,7 +71,7 @@ function handleStudentClick(row_data){
                     <Badge v-if="prop.data.deleted_at"
                            value="Trashed"
                            severity="danger"></Badge>
-                    <span class="cursor-pointer text-primary hover:text-blue-900" @click="handleStudentClick(prop.data.id)">
+                    <span class="cursor-pointer text-primary hover:text-blue-900" @click="handleStudentClick(prop.data.uuid)">
                         {{prop.data.student_count}}
                     </span>
                 </template>
@@ -86,7 +86,7 @@ function handleStudentClick(row_data){
                     <Badge v-if="prop.data.deleted_at"
                            value="Trashed"
                            severity="danger"></Badge>
-                    <span class="cursor-pointer text-primary hover:text-blue-900" @click="handleTeacherClick(prop.data.id)">
+                    <span class="cursor-pointer text-primary hover:text-blue-900" @click="handleTeacherClick(prop.data.uuid)">
                         {{prop.data.teacher_count}}
                     </span>
                 </template>

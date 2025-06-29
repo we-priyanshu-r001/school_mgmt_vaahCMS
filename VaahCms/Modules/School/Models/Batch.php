@@ -368,14 +368,14 @@ class Batch extends VaahModel
     //-------------------------------------------------
     public function scopeTeacherFilter($query, $filter)
     {
-        if(!isset($filter['teacher_id']))
+        if(!isset($filter['teacher_uuid']))
         {
             return $query;
         }
-        $id = $filter['teacher_id'];
+        $id = $filter['teacher_uuid'];
 
         return $query->whereHas('teachers', function ($q1) use ($id) {
-            $q1->where('sc_teachers.id', $id);
+            $q1->where('sc_teachers.uuid', $id);
         });
     }
     //-------------------------------------------------

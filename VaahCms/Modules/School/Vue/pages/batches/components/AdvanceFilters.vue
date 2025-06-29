@@ -6,8 +6,8 @@ import VhFieldVertical from './../../../vaahvue/vue-three/primeflex/VhFieldVerti
 
 const store = useBatchStore();
 
-const student_count_range = ref([0,10])
-const teacher_count_range = ref([0,10])
+const student_count_range = ref([0, store.assets.total_students])
+const teacher_count_range = ref([0, store.assets.total_teachers])
 
 watch(student_count_range, (range) => {
     store.query.filter.student_count_min = range[0]

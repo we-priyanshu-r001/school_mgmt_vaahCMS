@@ -12,7 +12,7 @@ function handleBatchClick(row_data){
     router.push({
         name: 'batches.index',
         query: {
-            filter: {teacher_id: row_data},
+            filter: {teacher_uuid: row_data},
         }
     });
 }
@@ -113,7 +113,7 @@ function handleBatchClick(row_data){
                 <Badge v-if="prop.data.deleted_at"
                         value="Trashed"
                         severity="danger"></Badge>
-                <span class="cursor-pointer text-primary hover:text-blue-900" @click="handleBatchClick(prop.data.id)">
+                <span class="cursor-pointer text-primary hover:text-blue-900" @click="handleBatchClick(prop.data.uuid)">
                     {{prop.data.batch_count}}
                 </span>
             </template>

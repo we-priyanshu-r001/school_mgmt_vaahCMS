@@ -383,14 +383,14 @@ class Teacher extends VaahModel
     //-------------------------------------------------
     public function scopeBatchClickFilter($query, $filter)
     {
-        if(!isset($filter['batch_id']))
+        if(!isset($filter['batch_uuid']))
         {
             return $query;
         }
-        $id = $filter['batch_id'];
+        $id = $filter['batch_uuid'];
 
         return $query->whereHas('batches', function ($q1) use ($id) {
-            $q1->where('sc_batches.id', $id);
+            $q1->where('sc_batches.uuid', $id);
         });
     }
     //-------------------------------------------------
