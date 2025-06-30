@@ -1,21 +1,9 @@
 <script setup>
 import { vaah } from '../../../vaahvue/pinia/vaah'
 import { useTeacherStore } from '../../../stores/store-teachers'
-import { useRouter } from 'vue-router';
-import router from '../../../routes/router';
 
 const store = useTeacherStore();
 const useVaah = vaah();
-// const router = useRouter()
-
-function handleBatchClick(row_data){
-    router.push({
-        name: 'batches.index',
-        query: {
-            filter: {teacher_uuid: row_data},
-        }
-    });
-}
 
 </script>
 
@@ -113,7 +101,7 @@ function handleBatchClick(row_data){
                 <Badge v-if="prop.data.deleted_at"
                         value="Trashed"
                         severity="danger"></Badge>
-                <span class="cursor-pointer text-primary hover:text-blue-900" @click="handleBatchClick(prop.data.uuid)">
+                <span class="cursor-pointer text-primary hover:text-blue-900" @click="store.redirectFilter(prop.data.uuid)">
                     {{prop.data.batch_count}}
                 </span>
             </template>

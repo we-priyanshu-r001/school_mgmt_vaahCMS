@@ -939,17 +939,23 @@ export const useStudentStore = defineStore({
             this.form_menu_list = form_menu;
 
         },
-        // async  handleCreateActions  () {
-        //         // Switch to form view
-        //         store.toForm();
+        
+        // Custom Actions
 
-        //         // Reload assets
-        //         await store.getAssets();
+        async reloadPage() {
+            await this.getList();
+            vaah().toastSuccess(["Page Reloaded"]);
+        },
 
-        //         // Optionally: check what got loaded
-        //         console.log('Assets reloaded:', store.assets);
-        //     }
-        //---------------------------------------------------------------------
+        handleFilter(filter_name){
+            if(filter_name === 'AdvanceFilter'){
+                this.show_advance_filters = !this.show_advance_filters
+                this.show_filters = false
+            } else if(filter_name === 'Filter') {
+                this.show_filters = !this.show_filters
+                this.show_advance_filters = false
+            }
+        }
     }
 });
 

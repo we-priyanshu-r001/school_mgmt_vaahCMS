@@ -7,15 +7,7 @@ import { useStudentStore } from '../../../stores/store-students'
 const store = useStudentStore();
 const route = useRoute();
 
-function handleFilter(filterName){
-    if(filterName === 'AdvanceFilter'){
-        store.show_advance_filters = !store.show_advance_filters
-        store.show_filters = false
-    } else if(filterName === 'Filter') {
-        store.show_filters = !store.show_filters
-        store.show_advance_filters = false
-    }
-}
+
 
 onMounted(async () => {
     store.getListSelectedMenu();
@@ -67,7 +59,7 @@ const toggleBulkMenuState = (event) => {
                     class="p-button-sm"
                     :disabled="Object.keys(route.params).length"
                     data-testid="students-actions-show-advance-filters"
-                    @click="handleFilter('AdvanceFilter')">
+                    @click="store.handleFilter('AdvanceFilter')">
                     Advance Filters
                 </Button>
 
@@ -100,7 +92,7 @@ const toggleBulkMenuState = (event) => {
                                 class="p-button-sm"
                                 :disabled="Object.keys(route.params).length"
                                 data-testid="students-actions-show-filters"
-                                @click="handleFilter('Filter')">
+                                @click="store.handleFilter('Filter')">
                                 Filters
                                 <Badge v-if="store.count_filters > 0" :value="store.count_filters"></Badge>
                             </Button>

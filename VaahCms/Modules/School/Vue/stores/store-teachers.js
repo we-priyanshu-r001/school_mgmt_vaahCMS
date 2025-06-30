@@ -955,6 +955,31 @@ export const useTeacherStore = defineStore({
 
         },
         //---------------------------------------------------------------------
+
+        // Custom Actions
+        redirectFilter(row_data){
+            this.$router.push({
+                name: 'batches.index',
+                query: {
+                    filter: {teacher_uuid: row_data},
+                }
+            });
+        },
+
+        async reloadPage() {
+            await this.getList();
+            vaah().toastSuccess(["Page Reloaded"]);
+        },
+
+        handleFilter(filter_name){
+            if(filter_name === 'AdvanceFilter'){
+                this.show_advance_filters = !this.show_advance_filters
+                this.show_filters = false
+            } else if(filter_name === 'Filter') {
+                this.show_filters = !this.show_filters
+                this.show_advance_filters = false
+            }
+        }
     }
 });
 
