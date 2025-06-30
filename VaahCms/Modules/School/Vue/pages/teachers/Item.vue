@@ -139,14 +139,14 @@ const toggleItemMenu = (event) => {
 
                         <template v-else-if="column === 'vh_taxonomy_subject_id'">
                             <VhViewRow label="Subject"
-                                       :value="store.item.subject.name"
+                                       :value="store.item.subject ? store.item.subject.name : 'N/A'"
                                        :can_copy="true"
                             />
                         </template>
 
                         <template v-else-if="column === 'vh_taxonomy_gender_id'">
                             <VhViewRow label="Gender"
-                                       :value="store.item.gender.name"
+                                       :value="store.item.gender ? store.item.gender.name : 'N/A'"
                                        :can_copy="true"
                             />
                         </template>

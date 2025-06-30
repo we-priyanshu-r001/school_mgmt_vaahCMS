@@ -96,7 +96,7 @@ const toggleCreateMenu = (event) => {
 
                     <Button data-testid="students-list-reload"
                             class="p-button-sm"
-                            @click="store.reload()">
+                            @click="store.reloadPage()">
                         <i class="pi pi-refresh mr-1"></i>
                     </Button>
 

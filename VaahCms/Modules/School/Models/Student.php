@@ -340,7 +340,7 @@ class Student extends VaahModel
     //-------------------------------------------------
     public static function getList($request)
     {
-        $list = self::getSorted($request->filter);
+        $list = self::getSorted($request->filter)->with('batch');
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
@@ -357,13 +357,13 @@ class Student extends VaahModel
 
         $list = $list->paginate($rows);
 
-        // agregate Data code block
-        foreach ($list->items() as $student) {
+        // // agregate Data code block
+        // foreach ($list->items() as $student) {
 
-            // Append custom attribute (not persisted)
-            $student->batch_name = $student->batch->name ?? null;
-            // dd($student->batch_name);
-        }
+        //     // Append custom attribute (not persisted)
+        //     $student->batch_name = $student->batch->name ?? null;
+        //     // dd($student->batch_name);
+        // }
 
         $response['success'] = true;
         $response['data'] = $list;
