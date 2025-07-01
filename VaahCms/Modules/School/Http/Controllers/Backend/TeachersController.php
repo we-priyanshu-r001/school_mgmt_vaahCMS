@@ -63,7 +63,6 @@ class TeachersController extends Controller
     public function getList(Request $request)
     {
         try{
-            // dd($request);
             return Teacher::getList($request);
         }catch (\Exception $e){
             $response = [];
@@ -153,7 +152,6 @@ class TeachersController extends Controller
     public function createItem(Request $request)
     {
         try{
-            // VaahMail::send(new BatchAssignmentMail(), 'priyanshu-r001@webreinvent.com');
             return Teacher::createItem($request);
         }catch (\Exception $e){
             $response = [];

@@ -12,8 +12,6 @@ const height = ref(window.innerHeight)
 
 const menu = ref();
 
-// watch(item.route)
-
 const menu_pt = ref({
   menuitem: ({ props }) => ({
     class: route.matched && route.matched[1] &&

@@ -295,8 +295,6 @@ class Student extends VaahModel
 
     public function scopeGenderFilter($query, $filter)
     {
-        // dd($query);
-
         if(!isset($filter['gender']))
         {
             return $query;
@@ -356,14 +354,6 @@ class Student extends VaahModel
         }
 
         $list = $list->paginate($rows);
-
-        // // agregate Data code block
-        // foreach ($list->items() as $student) {
-
-        //     // Append custom attribute (not persisted)
-        //     $student->batch_name = $student->batch->name ?? null;
-        //     // dd($student->batch_name);
-        // }
 
         $response['success'] = true;
         $response['data'] = $list;

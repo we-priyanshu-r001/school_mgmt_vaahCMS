@@ -38,7 +38,7 @@
 
                 @if(is_iterable($collection) && count($collection) > 1)
                     @php
-                        $firstRecord = $collection->first();
+                        $first_record = $collection->first();
                     @endphp
 
                     <p style="font-size: 15px; color: #555555; margin: 0 0 10px 0;">
@@ -46,9 +46,9 @@
                     </p>
 
                     <p style="font-size: 14px; color: #777777; margin: 0 0 20px 0;">
-                        <strong>Deleted At:</strong> {{ $firstRecord->deleted_at }}<br>
-                        <strong>Deleted By:</strong> {{ $firstRecord->deletedByUser->name ?? 'System' }}<br>
-                        <strong>Section:</strong> {{ class_basename($firstRecord) }}
+                        <strong>Deleted At:</strong> {{ $first_record->deleted_at }}<br>
+                        <strong>Deleted By:</strong> {{ $first_record->deletedByUser->name ?? 'System' }}<br>
+                        <strong>Section:</strong> {{ class_basename($first_record) }}
                     </p>
 
                     <table cellpadding="0" cellspacing="0" width="100%" style="margin-top: 10px; font-size: 14px; color: #333;">

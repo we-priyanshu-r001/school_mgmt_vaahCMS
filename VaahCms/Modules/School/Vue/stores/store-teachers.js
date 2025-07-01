@@ -237,7 +237,6 @@ export const useTeacherStore = defineStore({
         {
             if(data)
             {   
-                console.log(data)
                 this.list = data;
             }
         },
@@ -260,9 +259,7 @@ export const useTeacherStore = defineStore({
 
                 data = extractBatchIDs(data)
 
-                console.log(data)
                 this.item = data;
-                // console.log(data)
             }else{
                 this.$router.push({name: 'teachers.index',query:this.query});
             }

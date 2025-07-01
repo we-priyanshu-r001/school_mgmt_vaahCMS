@@ -180,7 +180,6 @@ class BatchesController extends Controller
     //----------------------------------------------------------
     public function updateItem(Request $request,$id)
     {
-        // dd($request);
         try{
             return Batch::updateItem($request,$id);
         }catch (\Exception $e){

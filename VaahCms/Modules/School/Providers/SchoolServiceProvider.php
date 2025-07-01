@@ -28,14 +28,6 @@ class SchoolServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
-
-        $models = [
-        Teacher::class,
-        Student::class,
-        Batch::class,
-        // Add more models here
-        ];
-
         $this->registerMiddleware($router);
         $this->registerTranslations();
         $this->registerConfig();
@@ -45,11 +37,6 @@ class SchoolServiceProvider extends ServiceProvider
         $this->registerSeeders();
         $this->registerBladeDirectives();
         $this->registerBladeComponents();
-        // Teacher::observe(TeacherObserver::class);
-
-        foreach ($models as $model) {
-            $model::observe(GlobalModelObserver::class);
-        }
 
     }
 

@@ -245,7 +245,6 @@ export const useBatchStore = defineStore({
         {
             if(data)
             {
-                // console.log(`data from getList: ${data}`)
                 this.item = data;
             }else{
                 this.$router.push({name: 'batches.index',query:this.query});

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ScBatchScTeacher extends Migration
+class ScBatchTeachers extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class ScBatchScTeacher extends Migration
     public function up()
     {
 
-        Schema::create('sc_batch_teacher', function (Blueprint $table) {
+        Schema::create('sc_batch_teachers', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uuid')->nullable()->index();
             $table->unsignedBigInteger('sc_teacher_id')->nullable();
@@ -41,6 +41,6 @@ class ScBatchScTeacher extends Migration
     */
     public function down()
     {
-        Schema::dropIfExists('sc_batch_teacher');
+        Schema::dropIfExists('sc_batch_teachers');
     }
 }

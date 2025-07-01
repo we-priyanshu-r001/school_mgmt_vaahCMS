@@ -8,10 +8,6 @@ import VhViewRow from '../../vaahvue/vue-three/primeflex/VhViewRow.vue';
 const store = useTeacherStore();
 const route = useRoute();
 
-const batchNames = computed(() => {
-    return store.item.batches.map(batch => batch);
-});
-
 onMounted(async () => {
 
     /**

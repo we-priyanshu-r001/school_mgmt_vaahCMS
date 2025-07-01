@@ -1,6 +1,5 @@
 <?php namespace VaahCms\Modules\School\Models;
 
-// use App\Mail\BatchAssignmentMail;
 use VaahCms\Modules\School\Mails\BatchAssignmentMail;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,7 +13,6 @@ use WebReinvent\VaahCms\Libraries\VaahSeeder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\DB;
 use VaahCms\Modules\School\Mails\SuperAdminRecordDeletedMail;
-// use VaahCms\Modules\School\Models\Teacher;
 use WebReinvent\VaahCms\Libraries\VaahMail;
 use WebReinvent\VaahCms\Models\Taxonomy;
 use VaahCms\Modules\School\Traits\DeleteMailTrait;
@@ -70,7 +68,7 @@ class Teacher extends VaahModel
     //-------------------------------------------------
     // Relation Methods
     public function batches(){
-        return $this->belongsToMany(Batch::class, 'sc_batch_teacher', 'sc_teacher_id', 'sc_batch_id');
+        return $this->belongsToMany(Batch::class, 'sc_batch_teachers', 'sc_teacher_id', 'sc_batch_id');
     }
 
     //-------------------------------------------------
@@ -261,18 +259,14 @@ class Teacher extends VaahModel
 
         // Many to Many IMPL Blocks
         $batch_ids = $inputs['batches'];
-        // unset($inputs['batches']);
 
         $item = new self();
         $item->fill($inputs);
-        // dd($inputs);
         
         $item->save();
         $item->batches()->attach($batch_ids);
         // Many to Many IMPL Block
-
-        // Temporariliy Disabled
-        // Send Mail to teacher 
+ 
         $item->load('batches');
 
         if ($item->email) {
@@ -353,8 +347,6 @@ class Teacher extends VaahModel
     //-------------------------------------------------
     public function scopeSubjectFilter($query, $filter)
     {
-        // dd($query);
-
         if(!isset($filter['subject']))
         {
             return $query;
@@ -367,8 +359,6 @@ class Teacher extends VaahModel
     //-------------------------------------------------
     public function scopeBatchFilter($query, $filter)
     {
-        // dd($query);
-
         if(!isset($filter['batches']))
         {
             return $query;
@@ -396,8 +386,6 @@ class Teacher extends VaahModel
     //-------------------------------------------------
     public function scopeBatchCountFilter($query, $filter)
     {
-        // dd($query);
-
         if(!isset($filter['batch_count_min']) && !isset($filter['batch_count_max']))
         {
             return $query;
@@ -413,7 +401,6 @@ class Teacher extends VaahModel
     //-------------------------------------------------
     public function scopeGenderFilter($query, $filter)
     {
-        // dd($query);
 
         if(!isset($filter['gender']))
         {
@@ -433,7 +420,6 @@ class Teacher extends VaahModel
             return $query;
         }
         $search_array = explode(' ',$filter['q']);
-        // dd($search_array);
         foreach ($search_array as $search_item){
             $query->where(function ($q1) use ($search_item) {
                 $q1->where('name', 'LIKE', '%' . $search_item . '%')
@@ -476,8 +462,6 @@ class Teacher extends VaahModel
         $response['data'] = $list;
 
         return $response;
-
-
     }
 
     //-------------------------------------------------
@@ -569,7 +553,7 @@ class Teacher extends VaahModel
         $items_id = collect($inputs['items'])->pluck('id')->toArray();
 
         // Method 1 to delete all pivot table entries there might be better ways but I'm unaware about them at the moment
-        DB::table('sc_batch_teacher')->whereIn('sc_teacher_id', $items_id)->delete();
+        DB::table('sc_batch_teachers')->whereIn('sc_teacher_id', $items_id)->delete();
 
         self::whereIn('id', $items_id)->forceDelete();
 
@@ -613,7 +597,7 @@ class Teacher extends VaahModel
             case 'delete-all':
 
                 // Directly deleting all rows and reseting auto increment without any teacher any data in the pivot table is irrelevent
-                DB::table('sc_batch_teacher')->truncate();
+                DB::table('sc_batch_teachers')->truncate();
 
                 $list->forceDelete();
                 break;
@@ -794,7 +778,6 @@ class Teacher extends VaahModel
 
         $rules = array(
             'name' => 'required|max:150',
-            // 'slug' => 'required|max:150',
             'email' => 'required|max:150',
             'contact' => 'required|max:10|min:10',
 

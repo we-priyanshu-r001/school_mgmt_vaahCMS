@@ -10,11 +10,6 @@ class SuperAdminRecordDeletedMail extends Mailable {
 
     use Queueable, SerializesModels;
 
-    // public $model_name;
-    // public $record_id;
-    // public $record_name;
-    // public $deleted_by;
-    // public $timestamp;
     public $super_admin;
     public $collection;
 
@@ -25,11 +20,6 @@ class SuperAdminRecordDeletedMail extends Mailable {
      */
     public function __construct($collection, $super_admin)
     {
-        // $this->model_name = class_basename($model);
-        // $this->record_id = $model->id;
-        // $this->record_name = $model->name;
-        // $this->deleted_by = $model->deletedByUser->name;
-        // $this->timestamp = $model->deleted_at;
         $this->super_admin = $super_admin->name;
 
         $this->collection = $collection;
