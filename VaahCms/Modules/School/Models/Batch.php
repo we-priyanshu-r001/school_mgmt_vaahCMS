@@ -72,7 +72,7 @@ class Batch extends VaahModel
 
     public function teachers()
     {
-        return $this->belongsToMany(Teacher::class, 'sc_batch_sc_teacher', 'sc_batch_id', 'sc_teacher_id');
+        return $this->belongsToMany(Teacher::class, 'sc_batch_teacher', 'sc_batch_id', 'sc_teacher_id');
     }
 
     //-------------------------------------------------
@@ -496,7 +496,7 @@ class Batch extends VaahModel
 
         
         // Method 1 to delete all pivot table entries there might be better ways but I'm unaware about them at the moment
-        DB::table('sc_batch_sc_teacher')->whereIn('sc_teacher_id', $items_id)->delete();
+        DB::table('sc_batch_teacher')->whereIn('sc_teacher_id', $items_id)->delete();
 
         self::whereIn('id', $items_id)->forceDelete();
 
@@ -539,7 +539,7 @@ class Batch extends VaahModel
                     ->each->restore();
                 break;
             case 'delete-all':
-                DB::table('sc_batch_sc_teacher')->truncate();
+                DB::table('sc_batch_teacher')->truncate();
 
                 $list->forceDelete();
                 break;

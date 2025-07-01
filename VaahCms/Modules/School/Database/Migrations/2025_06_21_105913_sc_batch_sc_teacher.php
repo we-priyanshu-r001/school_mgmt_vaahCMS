@@ -14,7 +14,7 @@ class ScBatchScTeacher extends Migration
     public function up()
     {
 
-        Schema::create('sc_batch_sc_teacher', function (Blueprint $table) {
+        Schema::create('sc_batch_teacher', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uuid')->nullable()->index();
             $table->unsignedBigInteger('sc_teacher_id')->nullable();
@@ -41,6 +41,6 @@ class ScBatchScTeacher extends Migration
     */
     public function down()
     {
-        Schema::dropIfExists('sc_batch_sc_teacher');
+        Schema::dropIfExists('sc_batch_teacher');
     }
 }

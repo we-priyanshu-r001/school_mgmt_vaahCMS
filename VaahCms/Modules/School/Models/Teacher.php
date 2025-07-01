@@ -70,7 +70,7 @@ class Teacher extends VaahModel
     //-------------------------------------------------
     // Relation Methods
     public function batches(){
-        return $this->belongsToMany(Batch::class, 'sc_batch_sc_teacher', 'sc_teacher_id', 'sc_batch_id');
+        return $this->belongsToMany(Batch::class, 'sc_batch_teacher', 'sc_teacher_id', 'sc_batch_id');
     }
 
     //-------------------------------------------------
@@ -276,7 +276,7 @@ class Teacher extends VaahModel
         $item->load('batches');
 
         if ($item->email) {
-            VaahMail::send(new BatchAssignmentMail($item), $item->email);
+            VaahMail::addInQueue(new BatchAssignmentMail($item), $item->email);
         }
 
         $response = self::getItem($item->id);
@@ -569,7 +569,7 @@ class Teacher extends VaahModel
         $items_id = collect($inputs['items'])->pluck('id')->toArray();
 
         // Method 1 to delete all pivot table entries there might be better ways but I'm unaware about them at the moment
-        DB::table('sc_batch_sc_teacher')->whereIn('sc_teacher_id', $items_id)->delete();
+        DB::table('sc_batch_teacher')->whereIn('sc_teacher_id', $items_id)->delete();
 
         self::whereIn('id', $items_id)->forceDelete();
 
@@ -613,7 +613,7 @@ class Teacher extends VaahModel
             case 'delete-all':
 
                 // Directly deleting all rows and reseting auto increment without any teacher any data in the pivot table is irrelevent
-                DB::table('sc_batch_sc_teacher')->truncate();
+                DB::table('sc_batch_teacher')->truncate();
 
                 $list->forceDelete();
                 break;
@@ -730,7 +730,7 @@ class Teacher extends VaahModel
             $item->load('batches');
 
             if ($item->email) {
-                VaahMail::send(new BatchAssignmentMail($item), $item->email);
+                VaahMail::addInQueue(new BatchAssignmentMail($item), $item->email);
             }
         }
 

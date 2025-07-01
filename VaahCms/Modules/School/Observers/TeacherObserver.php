@@ -19,11 +19,7 @@ class TeacherObserver {
      */
     public function updated(Teacher $teacher): void
     {
-        // $teacher->load('batches');
-
-        // if ($teacher->email) {
-        //     VaahMail::send(new BatchAssignmentMail($teacher), $teacher->email);
-        // }
+        
     }
 
 }
