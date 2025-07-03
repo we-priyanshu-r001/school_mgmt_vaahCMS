@@ -605,10 +605,18 @@ export const useTeacherStore = defineStore({
         {
             this.count_filters = 0;
             if(query && query.filter)
-            {
-                let filter = vaah().cleanObject(query.filter);
-                this.count_filters = Object.keys(filter).length;
-            }
+                {
+
+                    const excludeKeys = ['batch_uuid']
+                    let filter = vaah().cleanObject(query.filter);
+                    let filtered = Object.keys(filter)
+                    .filter(key => !excludeKeys.includes(key))
+                    .reduce((obj, key) => {
+                        obj[key] = filter[key];
+                        return obj;
+                    }, {});
+                    this.count_filters = Object.keys(filtered).length;
+                }
         },
         //---------------------------------------------------------------------
         async clearSearch()
@@ -629,8 +637,11 @@ export const useTeacherStore = defineStore({
         //---------------------------------------------------------------------
         async resetQueryString()
         {
+
             for(let key in this.query.filter)
             {
+            // console.log(this.query.filter[key])
+
                 this.query.filter[key] = null;
             }
             await this.updateUrlQueryString(this.query);
@@ -955,6 +966,7 @@ export const useTeacherStore = defineStore({
 
         // Custom Actions
         redirectFilter(row_data){
+            // console.log(row_data)
             this.$router.push({
                 name: 'batches.index',
                 query: {

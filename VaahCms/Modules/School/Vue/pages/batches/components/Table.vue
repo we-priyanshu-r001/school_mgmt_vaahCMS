@@ -53,7 +53,7 @@ const useVaah = vaah();
                     <Badge v-if="prop.data.deleted_at"
                            value="Trashed"
                            severity="danger"></Badge>
-                    <span class="cursor-pointer text-primary hover:text-blue-900" @click="store.redirectFilter('students.index', 'batch_uuid', prop.data.uuid)">
+                    <span class="cursor-pointer text-primary hover:text-blue-900" @click="store.redirectStudentFilter('students.index', prop.data.uuid)">
                         {{prop.data.student_count}}
                     </span>
                 </template>
@@ -68,7 +68,7 @@ const useVaah = vaah();
                     <Badge v-if="prop.data.deleted_at"
                            value="Trashed"
                            severity="danger"></Badge>
-                    <span class="cursor-pointer text-primary hover:text-blue-900" @click="store.redirectFilter('teachers.index','batch_uuid', prop.data.uuid)">
+                    <span class="cursor-pointer text-primary hover:text-blue-900" @click="store.redirectTeacherFilter('teachers.index', prop.data.uuid)">
                         {{prop.data.teacher_count}}
                     </span>
                 </template>

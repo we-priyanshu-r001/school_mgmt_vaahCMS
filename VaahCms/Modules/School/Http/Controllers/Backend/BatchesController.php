@@ -33,7 +33,10 @@ class BatchesController extends Controller
             $data['empty_item'] = Batch::getEmptyItem();
 
             $data['total_students'] = Student::all()->count();
-            $data['total_teachers'] = Teacher::all()->count();
+
+            $teachers = Teacher::all();
+            $data['teachers'] = $teachers;
+            $data['total_teachers'] = $teachers->count();
             $data['actions'] = [];
 
 

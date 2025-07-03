@@ -99,6 +99,26 @@ watch(teacher_count_range, (range) => {
 
             </VhFieldVertical>
 
+            {{ store.query.filter.teacher }}
+            <VhFieldVertical >
+                <template #label>
+                    <b>Teachers:</b>
+                </template>
+                <div class="flex gap-1">
+                    <MultiSelect 
+                        v-model="store.query.filter.teacher" 
+                        display="chip" 
+                        :options="store.assets.teachers" 
+                        filter optionLabel="name" 
+                        optionValue="id" 
+                        data-testid="teachers-filters-teacher-only"  
+                        placeholder="Select a Teacher" 
+                        class="w-full md:w-14rem" />
+                    <Button label="Reset" @click.prevent="store.query.filter.batches = null"/>
+                </div>
+
+            </VhFieldVertical>
+
         </Panel>
 
     </div>

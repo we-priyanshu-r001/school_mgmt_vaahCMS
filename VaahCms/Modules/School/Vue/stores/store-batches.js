@@ -66,7 +66,9 @@ export const useBatchStore = defineStore({
         list_create_menu: [],
         item_menu_list: [],
         item_menu_state: null,
-        form_menu_list: []
+        form_menu_list: [],
+        advance_filter_count: 0,
+        redirect_filter_count: 0,
     }),
     getters: {
 
@@ -115,23 +117,61 @@ export const useBatchStore = defineStore({
             }
         },
         //---------------------------------------------------------------------
-        async updateQueryFromUrl(route)
-        {
-            if(route.query)
-            {
-                if(Object.keys(route.query).length > 0)
-                {
-                    for(let key in route.query)
-                    {
-                        this.query[key] = route.query[key]
+        // async updateQueryFromUrl(route)
+        // {
+        //     if(route.query)
+        //     {
+        //         if(Object.keys(route.query).length > 0)
+        //         {
+        //             for(let key in route.query)
+        //             {
+        //                 if(key === 'filter')
+        //                 this.query[key] = route.query[key]
+        //                 console.log(this.query[key])
+        //             }
+        //             if(this.query.rows){
+        //                 this.query.rows = parseInt(this.query.rows);
+        //             }
+        //             this.countFilters(route.query);
+        //         }
+        //     }
+        // },
+
+        async updateQueryFromUrl(route) {
+            if (route.query && Object.keys(route.query).length > 0) {
+                for (let key in route.query) {
+                    let value = route.query[key];
+
+                    if (key === 'filter' && typeof value === 'object') {
+                        let normalizedFilter = { ...value };
+
+                        if ('teacher' in normalizedFilter) {
+                            let teacher_value = normalizedFilter.teacher;
+
+                            if (Array.isArray(teacher_value)) {
+                                normalizedFilter.teacher = teacher_value.map(v =>
+                                    (typeof v === 'string' && !isNaN(v)) ? Number(v) : v
+                                );
+                            } else if (typeof teacher_value === 'string' && !isNaN(teacher_value)) {
+                                normalizedFilter.course = Number(teacher_value);
+                            }
+                        }
+                        this.query.filter = normalizedFilter;
+
+                    } else if (typeof value === 'string' && !isNaN(value.trim())) {
+                        this.query[key] = Number(value);
+                    } else {
+                        this.query[key] = value;
                     }
-                    if(this.query.rows){
-                        this.query.rows = parseInt(this.query.rows);
-                    }
-                    this.countFilters(route.query);
                 }
+
+                this.countFilters(route.query);
             }
         },
+
+
+
+
         //---------------------------------------------------------------------
         watchRoutes(route)
         {
@@ -591,8 +631,41 @@ export const useBatchStore = defineStore({
             this.count_filters = 0;
             if(query && query.filter)
             {
+                const redirect_filter_keys = ['teacher_uuid']
+
+                const advance_filter_keys = ['teacher', 'student_count_min', 'teacher_count_min']
+
+                let exclude_keys = redirect_filter_keys.concat(advance_filter_keys)
+
+                exclude_keys = exclude_keys.concat(['teacher_count_max', 'student_count_max'])
+
                 let filter = vaah().cleanObject(query.filter);
-                this.count_filters = Object.keys(filter).length;
+
+                let redirect_filter = Object.keys(filter)
+                    .filter(key => redirect_filter_keys.includes(key))
+                    .reduce((obj, key) => {
+                        obj[key] = filter[key];
+                        return obj;
+                    }, {});
+
+                let advance_filter = Object.keys(filter)
+                    .filter(key => advance_filter_keys.includes(key))
+                    .reduce((obj, key) => {
+                        obj[key] = filter[key];
+                        return obj;
+                    }, {});
+
+                
+                let filtered = Object.keys(filter)
+                    .filter(key => !exclude_keys.includes(key))
+                    .reduce((obj, key) => {
+                        obj[key] = filter[key];
+                        return obj;
+                    }, {});
+
+                this.count_filters = Object.keys(filtered).length;
+                this.advance_filter_count = Object.keys(advance_filter).length;
+                this.redirect_filter_count = Object.keys(redirect_filter).length;
             }
         },
         //---------------------------------------------------------------------
@@ -610,6 +683,9 @@ export const useBatchStore = defineStore({
 
             //reload page list
             await this.getList();
+
+            this.advance_filter_count = 0;
+            this.redirectTeacherFilter = 0;
         },
         //---------------------------------------------------------------------
         async resetQueryString()
@@ -939,13 +1015,22 @@ export const useBatchStore = defineStore({
         //---------------------------------------------------------------------
 
         // Custom Actions
-        redirectFilter(redirect_to, filter_name, row_data) {
+        redirectStudentFilter(redirect_to, row_data) {
             this.$router.push({
                 name: redirect_to,
                 query: {
-                    [`filter[${filter_name}]`]: row_data
+                    filter: {batch_uuid: row_data}
                 }
             })
+        },
+
+        redirectTeacherFilter(redirect_to, row_data) {
+            this.$router.push({
+                name: redirect_to,
+                query: {
+                    filter: {batch_uuid: row_data}
+                }
+            });
         },
 
         async reloadPage() {
